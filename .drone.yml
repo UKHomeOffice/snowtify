@@ -28,6 +28,7 @@ pipeline:
   docker-build-and-push:
     image: ukhomeoffice/drone-docker
     secrets: [ docker_password ]
+    DOCKER_LAUNCH_DEBUG: true
     username: '${DOCKER_USERNAME}'
     repo: '${DOCKER_REPO}/${NAME}'
     registry: '${DOCKER_REPO}'
