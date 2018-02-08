@@ -1,0 +1,42 @@
+matrix:
+  NAME:
+    - drone-service-now
+  MAJOR:
+    - 0
+  MINOR:
+    - 0
+  PATCH:
+    - 0
+  DOCKER_USERNAME:
+    - drone_service_now
+  DOCKER_REPO:
+    - docker.digital.homeoffice.gov.uk
+
+pipeline:
+
+  docker-build:
+    image: ukhomeoffice/drone-docker
+    secrets: [ docker_password ]
+    username: '${DOCKER_USERNAME}'
+    repo: '${DOCKER_REPO}/${NAME}'
+    registry: '${DOCKER_REPO}'
+    tags: latest
+    dry_run: true
+    when:
+      event: pull_request
+
+  docker-build-and-push:
+    image: ukhomeoffice/drone-docker
+    secrets: [ docker_password ]
+    username: '${DOCKER_USERNAME}'
+    repo: '${DOCKER_REPO}/${NAME}'
+    registry: '${DOCKER_REPO}'
+    tags:
+      - '${MAJOR}.${MINOR}.${PATCH}-${DRONE_COMMIT:0:10}'
+      - '${MAJOR}.${MINOR}.${PATCH}'
+      - '${MAJOR}.${MINOR}'
+      - '${MAJOR}'
+      - 'latest'
+    when:
+      event: push
+      branch: master
