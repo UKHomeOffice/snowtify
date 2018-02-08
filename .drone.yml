@@ -10,7 +10,9 @@ matrix:
   DOCKER_USERNAME:
     - ukhomeofficedigital+drone_service_now
   DOCKER_REPO:
-    - docker.digital.homeoffice.gov.uk
+    - quay.io
+  DOCKER_PATH:
+    - ukhomeofficedigital
 
 pipeline:
 
@@ -18,7 +20,7 @@ pipeline:
     image: ukhomeoffice/drone-docker
     secrets: [ docker_password ]
     username: '${DOCKER_USERNAME}'
-    repo: '${DOCKER_REPO}/${NAME}'
+    repo: '${DOCKER_REPO}/${DOCKER_PATH}/${NAME}'
     registry: '${DOCKER_REPO}'
     tags: latest
     dry_run: true
@@ -29,7 +31,7 @@ pipeline:
     image: ukhomeoffice/drone-docker
     secrets: [ docker_password, rk_url, rk_auth ]
     username: '${DOCKER_USERNAME}'
-    repo: '${DOCKER_REPO}/${NAME}'
+    repo: '${DOCKER_REPO}/${DOCKER_PATH}/${NAME}'
     registry: '${DOCKER_REPO}'
     tags:
       - '${MAJOR}.${MINOR}.${PATCH}-${DRONE_COMMIT:0:10}'
