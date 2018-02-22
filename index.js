@@ -12,7 +12,7 @@ module.exports = request
   .set('Accept', 'application/json')
   .send(config.message)
   .then(res => {
-    console.log('Notification successfully sent, response code:', res.statusCode);
+    console.log('Notification successfully sent, response:', res.statusCode, res.json || res.text);
     return res;
   })
   .catch(err => {
