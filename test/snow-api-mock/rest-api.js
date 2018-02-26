@@ -1,6 +1,7 @@
 'use strict';
 
-const { expect } = require('chai');
+const { expect } = require('chai').use(require('chai-json'));
+process.title    = 'ServiceNow-mock-api';
 
 module.exports = {
   path:   '/api/now/table/x_fho_siam_integra_transactions',

@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "cover": "istanbul cover _mocha -- ./test",
     "check-coverage": "istanbul check-coverage --statement 100 --branch 100 --function 100 --line 100",
-    "watch:unit": "nodemon -w index.js -w config.js -w test -x 'npm-run-all -s lint cover'"
+    "watch:unit": "nodemon -w index.js -w config.js -w test -x 'npm-run-all -s lint cover'",
+    "start:mock-api": "dyson test/snow-api-mock",
+    "stop:mock-api": "killall ServiceNow-mock-api"
   },
   "repository": {
     "type": "git",
