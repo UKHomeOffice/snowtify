@@ -14,6 +14,10 @@ app.listen = function listen() {
 // created for the express app, then we can close it nicely after the tests finish
 
 describe('index.js', () => {
+  before(() => {
+    sinon.stub(process, 'exit');
+  });
+
   describe('helper function', () => {
     describe('redact', () => {
       const req = { };
@@ -103,8 +107,7 @@ describe('index.js', () => {
 
     describe('Check failures are reported', () => {
       before(() => {
-        this.exit    = process.exit;
-        process.exit = sinon.spy();
+        process.exit.resetHistory();
         this.config  = {
           endpoint: `http://localhost:${mockPort}/${snowPath}`,
           message:  '{"payload":"unauthorised notification"}'
@@ -125,14 +128,14 @@ describe('index.js', () => {
               });
             expect(process.exit).to.have.been.calledOnce.and.calledWith(2);
           }));
-
-      after(() => {
-        process.exit = this.exit;
-      });
     });
 
     after('close the dyson mock API service', () => {
       server.close();
     });
+  });
+
+  after(() => {
+    process.exit.restore();
   });
 });
