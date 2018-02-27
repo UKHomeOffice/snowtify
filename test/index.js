@@ -2,6 +2,7 @@
 
 const http     = require('http');
 const snowPath = rewire('../config').__get__('snowPath'); // eslint-disable-line no-underscore-dangle
+const newID    = rewire('./snow-api-mock/rest-api').__get__('newID'); // eslint-disable-line no-underscore-dangle
 const mockPort = 3000;
 const app      = require('../node_modules/express/lib/application');
 let server;
@@ -47,14 +48,14 @@ describe('index.js', () => {
     describe('send new deployment notification', function () {
       before(() => {
         this.config = {
-          endpoint: `http://localhost:${mockPort}/${snowPath}`,
-          username: 'snow-user',
-          password: 'snow-pass',
-          message:  '{' +
+          endpoint:  `http://localhost:${mockPort}/${snowPath}`,
+          username:  'snow-user',
+          password:  'snow-pass',
+          message:   '{' +
             '"messageid":"HO_SIAM_IN_REST_CHG_POST_JSON",' +
             '"payload":"{' +
               '\\\"title\\\":\\\"new deployment\\\",' +
-              '\\\"endTime\\\":\\\"in a mo\\\",' +
+              '\\\"endTime\\\":\\\"4000-01-01 13:09:08\\\",' +
               '\\\"description\\\":\\\"something new\\\",' +
               '\\\"supplierRef\\\":\\\"ext ID\\\",' +
               '\\\"testing\\\":\\\"the test results\\\"' +
@@ -62,10 +63,14 @@ describe('index.js', () => {
         };
       });
 
-      it('should receive a 200 OK response', () =>
+      it('should receive a 201 response', () =>
         expect(proxyquire('../index', { './config': this.config })).to.eventually.include({
-          status: 200,
-          text: JSON.stringify({ 'internal_identifier': 'new int ID' })
+          status: 201,
+          text: JSON.stringify({
+            result: {
+              'internal_identifier': newID
+            }
+          })
         }));
     });
 
@@ -83,8 +88,8 @@ describe('index.js', () => {
         };
       });
 
-      it('should receive a 200 OK response', () =>
-        expect(proxyquire('../index', { './config': this.config })).to.eventually.have.property('status', 200));
+      it('should receive a 201 response', () =>
+        expect(proxyquire('../index', { './config': this.config })).to.eventually.have.property('status', 201));
     });
 
     describe('send deployment status update notification', function () {
@@ -101,8 +106,8 @@ describe('index.js', () => {
         };
       });
 
-      it('should receive a 200 OK response', () =>
-        expect(proxyquire('../index', { './config': this.config })).to.eventually.have.property('status', 200));
+      it('should receive a 201 response', () =>
+        expect(proxyquire('../index', { './config': this.config })).to.eventually.have.property('status', 201));
     });
 
     describe('Check failures are reported', () => {

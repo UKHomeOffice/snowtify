@@ -12,7 +12,17 @@ module.exports = request
   .set('Accept', 'application/json')
   .send(config.message)
   .then(res => {
-    console.log('Notification successfully sent, response:', res.statusCode, res.json || res.text);
+    try {
+      if (res.status === 201) {
+        const json = JSON.parse(res.text);
+        console.log('Notification successfully sent - new change ID:', json.result.internal_identifier);
+      } else {
+        throw Error('Unexpected response!');
+      }
+    } catch (e) {
+      e.response = res;
+      throw e;
+    }
     return res;
   })
   .catch(err => {
