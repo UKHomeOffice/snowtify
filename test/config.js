@@ -81,18 +81,23 @@ describe('Config module', () => {
             PLUGIN_SEND_TO_PROD:      'True',
             PLUGIN_USERNAME:          'user',
             PLUGIN_PASSWORD:          'pass',
+            PLUGIN_INTERNAL_ID_FILE:  '/test-files/snow-int-id',
             PLUGIN_EXTERNAL_ID:       'ext-id',
             PLUGIN_NOTIFICATION_TYPE: 'deployment',
             PLUGIN_TITLE:             'title',
-            PLUGIN_END_TIME:          '2000-01-01 0:00:00',
+            PLUGIN_END_TIME:          '2000-01-01 12:30:00',
             PLUGIN_DESCRIPTION:       'desc',
             PLUGIN_TESTING:           'tests'
           };
-          this.env = env;
-          global.injected = { env: env };
-          this.config = rewire('../config');
+          this.env                           = env;
+          global.injected                    = { env: env };
+          const files                        = { };
+          files[env.PLUGIN_INTERNAL_ID_FILE] = '';
+          this.config                        = proxyquire('../config', { fs: ffs(files), moment: fmoment });
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
+        it('should have path to ID file', () => expect(this.config)
+          .to.have.property('intIDFile', this.env.PLUGIN_INTERNAL_ID_FILE));
         it('should have endpoint', () => expect(this.config)
           .to.have.property('endpoint', `${this.env.PLUGIN_PROTOCOL}://${this.env.PLUGIN_PROD_URL}/${snowP}`));
         it('should have username', () => expect(this.config).to.have.property('username', this.env.PLUGIN_USERNAME));
@@ -125,9 +130,9 @@ describe('Config module', () => {
             PLUGIN_DEPLOYMENT_OUTCOME: 'success',
             PLUGIN_COMMENTS:           'it went well'
           };
-          this.env = env;
+          this.env        = env;
           global.injected = { env: env };
-          this.config = rewire('../config');
+          this.config     = rewire('../config');
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
         it('should have endpoint', () => expect(this.config)
@@ -160,9 +165,9 @@ describe('Config module', () => {
             PLUGIN_DEPLOYMENT_OUTCOME: 'MEGA FAIL',
             PLUGIN_COMMENTS:           'it did not go well'
           };
-          this.env = env;
+          this.env        = env;
           global.injected = { env: env };
-          this.config = rewire('../config');
+          this.config     = rewire('../config');
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
         it('should have endpoint', () => expect(this.config)
@@ -194,11 +199,11 @@ describe('Config module', () => {
             SNOW_DESC_FILE:     '/test-files/snow-desc'
           };
           this.env                  = env;
-          this.desc                  = 'deployment desc from file';
-          const files                = { };
+          this.desc                 = 'deployment desc from file';
+          const files               = { };
           files[env.SNOW_DESC_FILE] = this.desc;
-          global.injected            = { env: env };
-          this.config                = proxyquire('../config', { fs: ffs(files), moment: fmoment });
+          global.injected           = { env: env };
+          this.config               = proxyquire('../config', { fs: ffs(files), moment: fmoment });
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
         it('should have endpoint', () => expect(this.config)
@@ -233,14 +238,14 @@ describe('Config module', () => {
             status:               'SUCCESS'
           };
           this.env                      = env;
-          this.intID                     = 'snow internal ID';
-          this.comments                  = 'it went well';
-          const files                    = { };
+          this.intID                    = 'snow internal ID';
+          this.comments                 = 'it went well';
+          const files                   = { };
           files[env.SNOW_INT_ID_FILE]   = this.intID;
           files[env.SNOW_DESC_FILE]     = 'description from earlier notification, overridden by update comments';
           files[env.SNOW_COMMENTS_FILE] = this.comments;
-          global.injected                = { env: env };
-          this.config                    = proxyquire('../config', { fs: ffs(files), moment: fmoment });
+          global.injected               = { env: env };
+          this.config                   = proxyquire('../config', { fs: ffs(files), moment: fmoment });
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
         it('should have endpoint', () => expect(this.config)
@@ -274,14 +279,14 @@ describe('Config module', () => {
             status:               'FAILED'
           };
           this.env                      = env;
-          this.intID                     = 'snow internal ID';
-          this.comments                  = 'it did not go well!';
-          const files                    = { };
+          this.intID                    = 'snow internal ID';
+          this.comments                 = 'it did not go well!';
+          const files                   = { };
           files[env.SNOW_INT_ID_FILE]   = this.intID;
           files[env.SNOW_DESC_FILE]     = 'description from earlier notification, overridden by update comments';
           files[env.SNOW_COMMENTS_FILE] = this.comments;
-          global.injected                = { env: env };
-          this.config                    = proxyquire('../config', { fs: ffs(files), moment: fmoment });
+          global.injected               = { env: env };
+          this.config                   = proxyquire('../config', { fs: ffs(files), moment: fmoment });
         });
         it('should return a correctly populated config object', () => expect(this.config).to.be.an('object'));
         it('should have endpoint', () => expect(this.config)

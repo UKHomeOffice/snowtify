@@ -1,5 +1,6 @@
 'use strict';
 
+const fs       = require('fs');
 const http     = require('http');
 const snowPath = rewire('../config').__get__('snowPath'); // eslint-disable-line no-underscore-dangle
 const newID    = rewire('./snow-api-mock/rest-api').__get__('newID'); // eslint-disable-line no-underscore-dangle
@@ -47,7 +48,9 @@ describe('index.js', () => {
 
     describe('send new deployment notification', function () {
       before(() => {
+        sinon.stub(fs, 'writeFileSync');
         this.config = {
+          intIDFile: '/test/ext',
           endpoint:  `http://localhost:${mockPort}/${snowPath}`,
           username:  'snow-user',
           password:  'snow-pass',
@@ -64,7 +67,7 @@ describe('index.js', () => {
       });
 
       it('should receive a 201 response', () =>
-        expect(proxyquire('../index', { './config': this.config })).to.eventually.include({
+        expect(proxyquire('../index', { './config': this.config, fs: fs })).to.eventually.include({
           status: 201,
           text: JSON.stringify({
             result: {
@@ -72,6 +75,12 @@ describe('index.js', () => {
             }
           })
         }));
+      it('should have recorded the "external_identifier" for this new change', () =>
+        expect(fs.writeFileSync).to.have.been.calledOnce.and.calledWith(this.config.intIDFile, newID));
+
+      after(() => {
+        fs.writeFileSync.restore();
+      });
     });
 
     describe('send deployment status update notification', function () {

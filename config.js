@@ -23,7 +23,8 @@ const snowTestInstance  = pa.PLUGIN_TEST_URL || 'lssitest.service-now.com';
 const sendToProd        = /^true$/i.test(pa.PLUGIN_SEND_TO_PROD) || /^prod/i.test(pa.DEPLOY_TO);
 const username          = pa.PLUGIN_USERNAME || pa.SERVICE_NOW_USERNAME || pa.SNOW_USER;
 const password          = pa.PLUGIN_PASSWORD || pa.SERVICE_NOW_PASSWORD || pa.SNOW_PASS;
-const internalID        = pa.PLUGIN_INTERNAL_ID || loadFromFile(pa.PLUGIN_INTERNAL_ID_FILE || pa.SNOW_INT_ID_FILE);
+const intIDFile         = pa.PLUGIN_INTERNAL_ID_FILE || pa.SNOW_INT_ID_FILE;
+const internalID        = pa.PLUGIN_INTERNAL_ID || loadFromFile(intIDFile);
 const extID             = `${username}-${repo}-${buildNumber}`;
 const externalID        = pa.PLUGIN_EXTERNAL_ID || loadFromFile(pa.PLUGIN_EXT_ID_FILE || pa.SNOW_EXT_ID_FILE) || extID;
 const snowPath          = 'api/now/table/x_fho_siam_integra_transactions';
@@ -67,8 +68,9 @@ const messageTemplates  = {
 };
 
 module.exports = {
-  endpoint: `${protocol}://${sendToProd ? snowProdInstance : snowTestInstance}/${snowPath}`,
-  username: username,
-  password: password,
-  message:  newChange ? messageTemplates.openChange : messageTemplates.update
+  intIDFile: intIDFile,
+  endpoint:  `${protocol}://${sendToProd ? snowProdInstance : snowTestInstance}/${snowPath}`,
+  username:  username,
+  password:  password,
+  message:   newChange ? messageTemplates.openChange : messageTemplates.update
 };

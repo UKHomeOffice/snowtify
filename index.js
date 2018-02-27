@@ -1,5 +1,6 @@
 'use strict';
 
+const fs      = require('fs');
 const config  = require('./config');
 const request = require('superagent');
 const redact  = (key, value) => /password/i.test(key) ? value.split('').map(() => '*').join('') : value;
@@ -15,6 +16,9 @@ module.exports = request
     try {
       if (res.status === 201) {
         const json = JSON.parse(res.text);
+        if (config.intIDFile) {
+          fs.writeFileSync(config.intIDFile, json.result.internal_identifier);
+        }
         console.log('Notification successfully sent - new change ID:', json.result.internal_identifier);
       } else {
         throw Error('Unexpected response!');
