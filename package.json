@@ -30,7 +30,6 @@
   },
   "homepage": "https://github.com/UKHomeOffice/drone-service-now#readme",
   "devDependencies": {
-    "bluebird": "^3.5.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chai-json": "github:RobinKnipe/chai-json",

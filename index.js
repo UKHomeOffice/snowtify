@@ -50,10 +50,10 @@ module.exports = request
   .send(config.message)
   .then(report)
   .catch(err => {
-    console.debug('Config parameters:', JSON.stringify(config, 2));
+    console.info('Config parameters:', JSON.stringify(config, redact, 2));
     console.error('Notification failed, response:', err.status, err.message);
     if (err.response) {
-      console.debug(err.response.json || err.response.text);
+      console.info(err.response.json || err.response.text);
     }
     process.exit(err.status || 2); // eslint-disable-line no-process-exit
     throw err;

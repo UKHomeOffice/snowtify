@@ -1,6 +1,5 @@
 'use strict';
 
-global.Promise    = require('bluebird');
 global.chai       = require('chai');
 global.expect     = chai.expect;
 global.rewire     = require('rewire');
