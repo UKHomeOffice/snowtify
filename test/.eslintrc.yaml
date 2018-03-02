@@ -1,6 +1,12 @@
 env:
   mocha: true
 globals:
+  describe: true
+  it: true
+  before: true
+  beforeAll: true
+  afterAll: true
+  after: true
   chai: true
   expect: true
   rewire: true

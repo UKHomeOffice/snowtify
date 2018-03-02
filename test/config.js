@@ -96,6 +96,7 @@ describe('Config module', () => {
           this.config                        = proxyquire('../config', { fs: ffs(files), moment: fmoment });
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
+        it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', true));
         it('should have path to ID file', () => expect(this.config)
           .to.have.property('intIDFile', this.env.PLUGIN_INTERNAL_ID_FILE));
         it('should have endpoint', () => expect(this.config)
@@ -135,6 +136,8 @@ describe('Config module', () => {
           this.config     = rewire('../config');
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
+        it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', false));
+        it('should indicate the update status', () => expect(this.config).to.have.property('success', true));
         it('should have endpoint', () => expect(this.config)
           .to.have.property('endpoint', `${this.env.PLUGIN_PROTOCOL}://${this.env.PLUGIN_PROD_URL}/${snowP}`));
         it('should have username', () => expect(this.config).to.have.property('username', this.env.PLUGIN_USERNAME));
@@ -170,6 +173,8 @@ describe('Config module', () => {
           this.config     = rewire('../config');
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
+        it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', false));
+        it('should indicate the update status', () => expect(this.config).to.have.property('success', false));
         it('should have endpoint', () => expect(this.config)
           .to.have.property('endpoint', `${this.env.PLUGIN_PROTOCOL}://${this.env.PLUGIN_PROD_URL}/${snowP}`));
         it('should have username', () => expect(this.config).to.have.property('username', this.env.PLUGIN_USERNAME));
@@ -206,6 +211,7 @@ describe('Config module', () => {
           this.config               = proxyquire('../config', { fs: ffs(files), moment: fmoment });
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
+        it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', true));
         it('should have endpoint', () => expect(this.config)
           .to.have.property('endpoint', `https://${prop(config, 'snowProdInstance')}/${snowP}`));
         it('should have username', () => expect(this.config)
@@ -248,6 +254,8 @@ describe('Config module', () => {
           this.config                   = proxyquire('../config', { fs: ffs(files), moment: fmoment });
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
+        it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', false));
+        it('should indicate the update status', () => expect(this.config).to.have.property('success', true));
         it('should have endpoint', () => expect(this.config)
           .to.have.property('endpoint', `https://${prop(config, 'snowProdInstance')}/${snowP}`));
         it('should have username', () => expect(this.config)
@@ -289,6 +297,8 @@ describe('Config module', () => {
           this.config                   = proxyquire('../config', { fs: ffs(files), moment: fmoment });
         });
         it('should return a correctly populated config object', () => expect(this.config).to.be.an('object'));
+        it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', false));
+        it('should indicate the update status', () => expect(this.config).to.have.property('success', false));
         it('should have endpoint', () => expect(this.config)
           .to.have.property('endpoint', `https://${prop(config, 'snowTestInstance')}/${snowP}`));
         it('should have username', () => expect(this.config)

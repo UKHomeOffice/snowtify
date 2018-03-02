@@ -68,9 +68,15 @@ const messageTemplates  = {
 };
 
 module.exports = {
-  intIDFile: intIDFile,
+  newChange: newChange,
   endpoint:  `${protocol}://${sendToProd ? snowProdInstance : snowTestInstance}/${snowPath}`,
   username:  username,
   password:  password,
   message:   newChange ? messageTemplates.openChange : messageTemplates.update
 };
+
+if (newChange) {
+  module.exports.intIDFile = intIDFile;
+} else {
+  module.exports.success = deploymentOutcome;
+}
