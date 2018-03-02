@@ -1,9 +1,11 @@
+#!/usr/bin/env node
+
 'use strict';
 
 const fs      = require('fs');
 const config  = require('./config');
 const request = require('superagent');
-const redact  = (key, value) => /password/i.test(key) ? value.split('').map(() => '*').join('') : value;
+const redact  = (key, value) => /password/i.test(key) && value ? value.split('').map(() => '*').join('') : value;
 const error   = (err, status, res) => {
   err.status   = status;
   err.response = res;
