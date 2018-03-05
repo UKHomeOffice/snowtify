@@ -1,0 +1,21 @@
+env:
+  mocha: true
+globals:
+  describe: true
+  it: true
+  before: true
+  beforeAll: true
+  afterAll: true
+  after: true
+  chai: true
+  expect: true
+  rewire: true
+  proxyquire: true
+  sinon: true
+rules:
+  func-names: 0
+  max-nested-callbacks: 0
+  no-unused-expressions: 0
+  space-before-function-paren: 0
+  no-process-env: 0
+  no-console: 0

@@ -1,2 +1,2 @@
-# drone-service-now
-A `drone.io` plugin to connect the ServiceNow API to the CD pipeline.
+# snowtify
+A utility to connect a CD pipeline to the ServiceNow API.

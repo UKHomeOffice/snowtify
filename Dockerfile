@@ -1,8 +1,24 @@
-FROM alpine:3.6
+FROM quay.io/ukhomeofficedigital/nodejs-base:v6
 
-RUN apk upgrade --no-cache
-RUN apk add --no-cache ca-certificates curl
+RUN yum clean -q all && \
+    yum update -y -q && \
+    yum install -y -q git && \
+    yum clean -q all && \
+    rpm --rebuilddb --quiet
 
-COPY /service-now.sh /service-now
+WORKDIR /app
+COPY ./package.json /app/
+ENV NODE_ENV production
+RUN npm install --only production > .npm-install.log 2>&1 && rm .npm-install.log || ( EC=$?; cat .npm-install.log; exit $EC )
 
-ENTRYPOINT ["/service-now"]
+COPY . /app
+
+RUN yum clean -q all && \
+    yum remove -y -q git && \
+    yum update -y -q && \
+    yum clean -q all && \
+    rpm --rebuilddb --quiet && \
+    chown -R nodejs:nodejs .
+
+USER nodejs
+CMD [ "npm", "start" ]
