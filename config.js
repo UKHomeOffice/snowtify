@@ -14,31 +14,30 @@ const loadFromFile = file => { // eslint-disable-line consistent-return
   }
 };
 
-const pa                = global.injected && global.injected.env || process.env;
-const repo              = pa.DRONE_REPO_NAME;
-const buildNumber       = pa.DRONE_BUILD_NUMBER;
-const protocol          = pa.PLUGIN_PROTOCOL || 'https';
-const snowProdInstance  = pa.PLUGIN_PROD_URL || 'lssiprod.service-now.com';
-const snowTestInstance  = pa.PLUGIN_TEST_URL || 'lssitest.service-now.com';
-const sendToProd        = /^true$/i.test(pa.PLUGIN_SEND_TO_PROD) || /^prod/i.test(pa.DEPLOY_TO);
-const username          = pa.PLUGIN_USERNAME || pa.SERVICE_NOW_USERNAME || pa.SNOW_USER;
-const password          = pa.PLUGIN_PASSWORD || pa.SERVICE_NOW_PASSWORD || pa.SNOW_PASS;
-const intIDFile         = pa.PLUGIN_INTERNAL_ID_FILE || pa.SNOW_INT_ID_FILE;
-const internalID        = pa.PLUGIN_INTERNAL_ID || loadFromFile(intIDFile);
-const extID             = `${username}-${repo}-${buildNumber}`;
-const externalID        = pa.PLUGIN_EXTERNAL_ID || loadFromFile(pa.PLUGIN_EXT_ID_FILE || pa.SNOW_EXT_ID_FILE) || extID;
+const pe                = global.injected && global.injected.env || process.env;
+const repo              = pe.DRONE_REPO_NAME;
+const buildNumber       = pe.DRONE_BUILD_NUMBER;
+const protocol          = pe.PLUGIN_PROTOCOL || 'https';
+const snowProdInstance  = pe.PLUGIN_PROD_URL || 'lssiprod.service-now.com';
+const snowTestInstance  = pe.PLUGIN_TEST_URL || 'lssitest.service-now.com';
+const sendToProd        = /^true$/i.test(pe.PLUGIN_SEND_TO_PROD) || /^prod/i.test(pe.DEPLOY_TO);
+const username          = pe.PLUGIN_USERNAME || pe.SERVICE_NOW_USERNAME || pe.SNOW_USER;
+const password          = pe.PLUGIN_PASSWORD || pe.SERVICE_NOW_PASSWORD || pe.SNOW_PASS;
+const intIDFile         = pe.PLUGIN_INTERNAL_ID_FILE || pe.SNOW_INT_ID_FILE;
+const internalID        = pe.PLUGIN_INTERNAL_ID || loadFromFile(intIDFile);
+const externalID        = pe.PLUGIN_EXTERNAL_ID || `${username}-${repo}-${buildNumber}`;
 const snowPath          = 'api/now/table/x_fho_siam_integra_transactions';
-const newDeployment     = /^deployment$/i.test(pa.PLUGIN_NOTIFICATION_TYPE);
-const statusUpdate      = /^(status)? *update$/i.test(pa.PLUGIN_NOTIFICATION_TYPE);
-const title             = pa.PLUGIN_TITLE || `Deployment #${buildNumber} of ${repo}`;
-const endTime           = pa.PLUGIN_END_TIME || moment().add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss');
-const descriptionFile   = !statusUpdate && loadFromFile(pa.PLUGIN_DESCRIPTION_FILE || pa.SNOW_DESC_FILE);
-const description       = pa.PLUGIN_DESCRIPTION || pa.SNOW_DESC || descriptionFile;
-const testingFile       = !statusUpdate && loadFromFile(pa.PLUGIN_TESTING_FILE || pa.SNOW_TESTING_FILE);
-const testing           = pa.PLUGIN_TESTING || pa.SNOW_TESTING || testingFile;
-const commentsFile      = !newDeployment && loadFromFile(pa.PLUGIN_COMMENTS_FILE || pa.SNOW_COMMENTS_FILE);
-const comments          = pa.PLUGIN_COMMENTS || pa.SNOW_COMMENTS || commentsFile;
-const deploymentOutcome = /^success$/i.test(pa.PLUGIN_DEPLOYMENT_OUTCOME || pa.status);
+const newDeployment     = /^deployment$/i.test(pe.PLUGIN_NOTIFICATION_TYPE);
+const statusUpdate      = /^(status)? *update$/i.test(pe.PLUGIN_NOTIFICATION_TYPE);
+const title             = pe.PLUGIN_TITLE || `Deployment #${buildNumber} of ${repo}`;
+const endTime           = pe.PLUGIN_END_TIME || moment().add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+const descriptionFile   = !statusUpdate && loadFromFile(pe.PLUGIN_DESCRIPTION_FILE || pe.SNOW_DESC_FILE);
+const description       = pe.PLUGIN_DESCRIPTION || pe.SNOW_DESC || descriptionFile;
+const testingFile       = !statusUpdate && loadFromFile(pe.PLUGIN_TESTING_FILE || pe.SNOW_TESTING_FILE);
+const testing           = pe.PLUGIN_TESTING || pe.SNOW_TESTING || testingFile;
+const commentsFile      = !newDeployment && loadFromFile(pe.PLUGIN_COMMENTS_FILE || pe.SNOW_COMMENTS_FILE);
+const comments          = pe.PLUGIN_COMMENTS || pe.SNOW_COMMENTS || commentsFile;
+const deploymentOutcome = /^success$/i.test(pe.PLUGIN_DEPLOYMENT_OUTCOME || pe.status);
 const newChange         = newDeployment || !(statusUpdate || comments);
 const messageTemplates  = {
   openChange: {
