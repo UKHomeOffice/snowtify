@@ -1,6 +1,6 @@
 matrix:
   NAME:
-    - drone-service-now
+    - snowtify
   MAJOR:
     - 0
   MINOR:

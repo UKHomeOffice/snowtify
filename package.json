@@ -1,5 +1,5 @@
 {
-  "name": "drone-service-now",
+  "name": "snowtify",
   "version": "0.0.0",
   "description": "A `drone.io` plugin to connect the ServiceNow API to a CD pipeline.",
   "main": "index.js",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/UKHomeOffice/drone-service-now.git"
+    "url": "git+https://github.com/UKHomeOffice/snowtify.git"
   },
   "keywords": [
     "drone",
@@ -27,9 +27,9 @@
   "author": "Robin Knipe",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/UKHomeOffice/drone-service-now/issues"
+    "url": "https://github.com/UKHomeOffice/snowtify/issues"
   },
-  "homepage": "https://github.com/UKHomeOffice/drone-service-now#readme",
+  "homepage": "https://github.com/UKHomeOffice/snowtify#readme",
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
