@@ -13,6 +13,8 @@ matrix:
     - quay.io
   DOCKER_PATH:
     - ukhomeofficedigital
+  SNOW_INT_ID_FILE:
+    - './internal-id'
 
 pipeline:
 
@@ -39,19 +41,28 @@ pipeline:
       event: push
       branch: master
 
-  e2e_test:
+  # check a new change can be opened
+  e2e_test_open:
     image: '${DOCKER_REPO}/${DOCKER_PATH}/${NAME}'
     secrets: [ service_now_username, service_now_password ]
-    description: 'End-to-end test for the ServiceNow drone plugin. Build #${DRONE_BUILD_NUMBER}'
+    description: 'End-to-end test for the ServiceNow CD utility. Build #${DRONE_BUILD_NUMBER}'
+    when:
+      event: push
+      branch: master
+
+  # check the change can be closed
+  e2e_test_close:
+    image: '${DOCKER_REPO}/${DOCKER_PATH}/${NAME}'
+    secrets: [ service_now_username, service_now_password ]
+    comments: 'Successfully tested build #${DRONE_BUILD_NUMBER}'
+    deployment_outcome: success
     when:
       event: push
       branch: master
 
   notify_slack_success:
     image: plugins/slack:1.0
-    secrets:
-      - SLACK_WEBHOOK
-    channel: general
+    secrets: [ SLACK_WEBHOOK ]
     username: Drone
     icon_url: http://readme.drone.io/0.5/logo_dark.svg
     icon.url: http://readme.drone.io/0.5/logo_dark.svg
@@ -64,9 +75,7 @@ pipeline:
 
   notify_slack_failure:
     image: plugins/slack
-    secrets:
-      - SLACK_WEBHOOK
-    channel: alerts
+    secrets: [ SLACK_WEBHOOK ]
     username: Drone
     icon_url: http://readme.drone.io/0.5/logo_dark.svg
     icon.url: http://readme.drone.io/0.5/logo_dark.svg
