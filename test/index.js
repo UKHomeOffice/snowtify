@@ -56,15 +56,16 @@ describe('index.js', () => {
         endpoint:  `http://localhost:${mockPort}/${snowPath}`,
         username:  'snow-user',
         password:  'snow-pass',
-        message:   '{' +
-          '"messageid":"HO_SIAM_IN_REST_CHG_POST_JSON",' +
-          '"payload":"{' +
-            '\\\"title\\\":\\\"new deployment\\\",' +
-            '\\\"endTime\\\":\\\"4000-01-01 13:09:08\\\",' +
-            '\\\"description\\\":\\\"something new\\\",' +
-            '\\\"supplierRef\\\":\\\"ext ID\\\",' +
-            '\\\"testing\\\":\\\"the test results\\\"' +
-          '}"}'
+        message:   JSON.stringify({
+          messageid: 'HO_SIAM_IN_REST_CHG_POST_JSON',
+          payload:   JSON.stringify({
+            title:       'new deployment',
+            endTime:     '4000-01-01 13:09:08',
+            description: 'something new',
+            supplierRef: 'ext ID',
+            testing:     'the test results'
+          })
+        })
       };
       before(() => {
         sinon.stub(fs, 'writeFileSync');
@@ -115,16 +116,16 @@ describe('index.js', () => {
       describe('for a successful deployment', function () {
         const config = {
           newChange: false,
-          success: true,
+          success:   true,
           endpoint: `http://localhost:${mockPort}/${snowPath}`,
           username: 'snow-user',
           password: 'snow-pass',
-          message: '{' +
-            '"messageid":"HO_SIAM_IN_REST_CHG_UPDATE_JSON",' +
-            '"internal_identifier":"int ID",' +
-            '"external_identifier":"ext ID",' +
-            '"payload":"{\\\"success\\\":\\\"true\\\",\\\"comments\\\":\\\"All good\\\"' +
-          '}"}'
+          message:  JSON.stringify({
+            messageid:             'HO_SIAM_IN_REST_CHG_UPDATE_JSON',
+            'internal_identifier': 'int ID',
+            'external_identifier': 'ext ID',
+            payload:               JSON.stringify({ success: true, comments: 'All good' })
+          })
         };
 
         it('should receive a 201 response', () =>
@@ -136,16 +137,16 @@ describe('index.js', () => {
       describe('for an unsuccessful deployment', function () {
         const config = {
           newChange: false,
-          success: false,
+          success:   false,
           endpoint: `http://localhost:${mockPort}/${snowPath}`,
           username: 'snow-user',
           password: 'snow-pass',
-          message: '{' +
-            '"messageid":"HO_SIAM_IN_REST_CHG_UPDATE_JSON",' +
-            '"internal_identifier":"int ID",' +
-            '"external_identifier":"ext ID",' +
-            '"payload":"{\\\"success\\\":\\\"false\\\",\\\"comments\\\":\\\"Something bad happened\\\"' +
-          '}"}'
+          message:  JSON.stringify({
+            messageid:             'HO_SIAM_IN_REST_CHG_UPDATE_JSON',
+            'internal_identifier': 'int ID',
+            'external_identifier': 'ext ID',
+            payload:               JSON.stringify({ success: false, comments: 'Something bad happened' })
+          })
         };
 
         it('should receive a 201 response', () =>
@@ -163,7 +164,7 @@ describe('index.js', () => {
       describe('when bad credentials are provided', () => {
         const config = {
           endpoint: `http://localhost:${mockPort}/${snowPath}`,
-          message: '{"payload":"unauthorised notification"}'
+          message:  JSON.stringify({ payload: 'unauthorised notification' })
         };
 
         before(() => {
@@ -187,15 +188,16 @@ describe('index.js', () => {
           endpoint: `http://localhost:${mockPort}/${snowPath}`,
           username: 'snow-user',
           password: 'snow-pass',
-          message: '{' +
-            '"messageid":"HO_SIAM_IN_REST_CHG_POST_JSON",' +
-            '"payload":"{' +
-              '\\\"title\\\":\\\"new deployment\\\",' +
-              '\\\"endTime\\\":\\\"4000-01-01 13:09:08\\\",' +
-              '\\\"description\\\":\\\"something new\\\",' +
-              '\\\"supplierRef\\\":\\\"ext ID\\\",' +
-              '\\\"testing\\\":\\\"the test results\\\"' +
-            '}"}'
+          message:  JSON.stringify({
+            messageid: 'HO_SIAM_IN_REST_CHG_POST_JSON',
+            payload:   JSON.stringify({
+              title:       'new deployment',
+              endTime:     '4000-01-01 13:09:08',
+              description: 'something new',
+              supplierRef: 'ext ID',
+              testing:     'the test results'
+            })
+          })
         };
         before(() => {
           process.exit.resetHistory();
@@ -212,18 +214,19 @@ describe('index.js', () => {
         describe('e.g. opening a new change with the "endTime" in the past', () => {
           const config = {
             newChange: true,
-            endpoint: `http://localhost:${mockPort}/${snowPath}`,
-            username: 'snow-user',
-            password: 'snow-pass',
-            message: '{' +
-              '"messageid":"HO_SIAM_IN_REST_CHG_POST_JSON",' +
-              '"payload":"{' +
-                '\\\"title\\\":\\\"new deployment\\\",' +
-                '\\\"endTime\\\":\\\"2000-01-01 13:09:08\\\",' +
-                '\\\"description\\\":\\\"something new\\\",' +
-                '\\\"supplierRef\\\":\\\"ext ID\\\",' +
-                '\\\"testing\\\":\\\"the test results\\\"' +
-              '}"}'
+            endpoint:  `http://localhost:${mockPort}/${snowPath}`,
+            username:  'snow-user',
+            password:  'snow-pass',
+            message:   JSON.stringify({
+              messageid: 'HO_SIAM_IN_REST_CHG_POST_JSON',
+              payload:   JSON.stringify({
+                title:       'new deployment',
+                endTime:     '2000-01-01 13:09:08',
+                description: 'something new',
+                supplierRef: 'ext ID',
+                testing:     'the test results'
+              })
+            })
           };
           before(() => {
             process.exit.resetHistory();
@@ -243,17 +246,17 @@ describe('index.js', () => {
 
         describe('e.g. send status update with bad IDs', () => {
           const config = {
-            newChange: false,
+            newChange:  false,
             successful: true,
-            endpoint: `http://localhost:${mockPort}/${snowPath}`,
-            username: 'snow-user',
-            password: 'snow-pass',
-            message: '{' +
-              '"messageid":"HO_SIAM_IN_REST_CHG_UPDATE_JSON",' +
-              '"internal_identifier":"! a proper int ID",' +
-              '"external_identifier":"! a proper ext ID",' +
-              '"payload":"{\\\"success\\\":\\\"true\\\",\\\"comments\\\":\\\"All good\\\"' +
-            '}"}'
+            endpoint:   `http://localhost:${mockPort}/${snowPath}`,
+            username:   'snow-user',
+            password:   'snow-pass',
+            message:    JSON.stringify({
+              messageid:             'HO_SIAM_IN_REST_CHG_UPDATE_JSON',
+              'internal_identifier': '! a proper int ID',
+              'external_identifier': '! a proper ext ID',
+              payload:               JSON.stringify({ success: true, comments: 'All good' })
+            })
           };
           before(() => {
             process.exit.resetHistory();
