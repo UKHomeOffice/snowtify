@@ -8,7 +8,7 @@ matrix:
   PATCH:
     - 0
   DOCKER_USERNAME:
-    - ukhomeofficedigital+drone_service_now
+    - ukhomeofficedigital+snowtify
   DOCKER_REPO:
     - quay.io
   DOCKER_PATH:
