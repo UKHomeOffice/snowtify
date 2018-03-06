@@ -42,17 +42,12 @@ const newChange         = newDeployment || !(statusUpdate || comments);
 const messageTemplates  = {
   openChange: {
     messageid: 'HO_SIAM_IN_REST_CHG_POST_JSON',
-    payload:   JSON.stringify(testing ? {
+    payload:   JSON.stringify({
       title:       title,
       endTime:     endTime,
       description: description,
       supplierRef: externalID,
-      testing:     testing
-    } : {
-      title:       title,
-      endTime:     endTime,
-      description: description,
-      supplierRef: externalID
+      testing:     testing || undefined
     })
   },
   update: {
@@ -71,11 +66,7 @@ module.exports = {
   endpoint:  `${protocol}://${sendToProd ? snowProdInstance : snowTestInstance}/${snowPath}`,
   username:  username,
   password:  password,
-  message:   newChange ? messageTemplates.openChange : messageTemplates.update
+  message:   newChange ? messageTemplates.openChange : messageTemplates.update,
+  intIDFile: intIDFile,
+  success:   deploymentOutcome
 };
-
-if (newChange) {
-  module.exports.intIDFile = intIDFile;
-} else {
-  module.exports.success = deploymentOutcome;
-}
