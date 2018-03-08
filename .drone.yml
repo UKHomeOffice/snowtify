@@ -18,14 +18,14 @@ matrix:
 
 pipeline:
 
-  docker-build:
+  docker-build-test:
     image: ukhomeoffice/drone-docker
     repo: '${DOCKER_REPO}/${DOCKER_PATH}/${NAME}'
     dry_run: true
     when:
       event: pull_request
 
-  docker-build-and-push:
+  docker-build-test-push:
     image: ukhomeoffice/drone-docker
     secrets: [ docker_password ]
     username: '${DOCKER_USERNAME}'
