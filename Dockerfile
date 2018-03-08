@@ -2,8 +2,6 @@ FROM quay.io/ukhomeofficedigital/nodejs-base:v6
 
 RUN yum clean -q all && \
     yum update -y -q && \
-    yum install -y -q git && \
-    yum clean -q all && \
     rpm --rebuilddb --quiet
 
 WORKDIR /app
@@ -13,12 +11,7 @@ RUN npm install --only production > .npm-install.log 2>&1 && rm .npm-install.log
 
 COPY . /app
 
-RUN yum clean -q all && \
-    yum remove -y -q git && \
-    yum update -y -q && \
-    yum clean -q all && \
-    rpm --rebuilddb --quiet && \
-    chown -R nodejs:nodejs .
+RUN chown -R nodejs:nodejs .
 
 USER nodejs
 CMD [ "npm", "start" ]
