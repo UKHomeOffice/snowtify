@@ -21,6 +21,7 @@ pipeline:
   docker-build:
     image: ukhomeoffice/drone-docker
     repo: '${DOCKER_REPO}/${DOCKER_PATH}/${NAME}'
+    dockerfile: Dockerfile-test
     dry_run: true
     when:
       event: pull_request
