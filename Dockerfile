@@ -9,12 +9,12 @@ COPY ./package.json /app/
 ENV NODE_ENV production
 RUN npm install --only production > .npm-install.log 2>&1 && rm .npm-install.log || ( EC=$?; cat .npm-install.log; exit $EC )
 
-COPY index.js config.js /app/
+COPY index.js config.js entrypoint.sh /app/
 
 RUN chown -R nodejs:nodejs .
 
 USER nodejs
-CMD [ "./index.js" ]
+ENTRYPOINT ["/app/entrypoint.sh"]
 
 
 FROM base
