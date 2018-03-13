@@ -76,8 +76,8 @@ describe('Config module', () => {
         before(() => {
           const env = {
             PLUGIN_PROTOCOL:          'http',
-            PLUGIN_PROD_URL:          'prod.com',
-            PLUGIN_TEST_URL:          'test.com',
+            PLUGIN_PROD_HOST:         'prod.com',
+            PLUGIN_TEST_HOST:         'test.com',
             PLUGIN_SEND_TO_PROD:      'True',
             PLUGIN_USERNAME:          'user',
             PLUGIN_PASSWORD:          'pass',
@@ -100,7 +100,7 @@ describe('Config module', () => {
         it('should have path to ID file', () => expect(this.config)
           .to.have.property('intIDFile', this.env.PLUGIN_INTERNAL_ID_FILE));
         it('should have endpoint', () => expect(this.config)
-          .to.have.property('endpoint', `${this.env.PLUGIN_PROTOCOL}://${this.env.PLUGIN_PROD_URL}/${snowP}`));
+          .to.have.property('endpoint', `${this.env.PLUGIN_PROTOCOL}://${this.env.PLUGIN_PROD_HOST}/${snowP}`));
         it('should have username', () => expect(this.config).to.have.property('username', this.env.PLUGIN_USERNAME));
         it('should have password', () => expect(this.config).to.have.property('password', this.env.PLUGIN_PASSWORD));
         it('should have a payload object', () => expect(this.config).to.have.property('message')
@@ -120,8 +120,8 @@ describe('Config module', () => {
         before(() => {
           const env = {
             PLUGIN_PROTOCOL:           'http',
-            PLUGIN_PROD_URL:           'prod.com',
-            PLUGIN_TEST_URL:           'test.com',
+            PLUGIN_PROD_HOST:          'prod.com',
+            PLUGIN_TEST_HOST:          'test.com',
             PLUGIN_SEND_TO_PROD:       'true',
             PLUGIN_USERNAME:           'user',
             PLUGIN_PASSWORD:           'pass',
@@ -139,7 +139,7 @@ describe('Config module', () => {
         it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', false));
         it('should indicate the update status', () => expect(this.config).to.have.property('success', true));
         it('should have endpoint', () => expect(this.config)
-          .to.have.property('endpoint', `${this.env.PLUGIN_PROTOCOL}://${this.env.PLUGIN_PROD_URL}/${snowP}`));
+          .to.have.property('endpoint', `${this.env.PLUGIN_PROTOCOL}://${this.env.PLUGIN_PROD_HOST}/${snowP}`));
         it('should have username', () => expect(this.config).to.have.property('username', this.env.PLUGIN_USERNAME));
         it('should have password', () => expect(this.config).to.have.property('password', this.env.PLUGIN_PASSWORD));
         it('should have a payload object', () => expect(this.config).to.have.property('message')
@@ -157,8 +157,8 @@ describe('Config module', () => {
         before(() => {
           const env = {
             PLUGIN_PROTOCOL:           'http',
-            PLUGIN_PROD_URL:           'prod.com',
-            PLUGIN_TEST_URL:           'test.com',
+            PLUGIN_PROD_HOST:          'prod.com',
+            PLUGIN_TEST_HOST:          'test.com',
             PLUGIN_SEND_TO_PROD:       'true',
             PLUGIN_USERNAME:           'user',
             PLUGIN_PASSWORD:           'pass',
@@ -176,7 +176,7 @@ describe('Config module', () => {
         it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', false));
         it('should indicate the update status', () => expect(this.config).to.have.property('success', false));
         it('should have endpoint', () => expect(this.config)
-          .to.have.property('endpoint', `${this.env.PLUGIN_PROTOCOL}://${this.env.PLUGIN_PROD_URL}/${snowP}`));
+          .to.have.property('endpoint', `${this.env.PLUGIN_PROTOCOL}://${this.env.PLUGIN_PROD_HOST}/${snowP}`));
         it('should have username', () => expect(this.config).to.have.property('username', this.env.PLUGIN_USERNAME));
         it('should have password', () => expect(this.config).to.have.property('password', this.env.PLUGIN_PASSWORD));
         it('should have a payload object', () => expect(this.config).to.have.property('message')
@@ -235,7 +235,7 @@ describe('Config module', () => {
           const env = {
             DRONE_REPO_NAME:      'my-repo',
             DRONE_BUILD_NUMBER:   42,
-            DEPLOY_TO:            'PRODUCTION',
+            SNOW_ENDPOINT:        'ftp://prety.sure/this/would.not?work=though',
             SERVICE_NOW_USERNAME: 'user',
             SERVICE_NOW_PASSWORD: 'pass',
             SNOW_INT_ID_FILE:     '/test-files/snow-int-id',
@@ -256,8 +256,7 @@ describe('Config module', () => {
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
         it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', false));
         it('should indicate the update status', () => expect(this.config).to.have.property('success', true));
-        it('should have endpoint', () => expect(this.config)
-          .to.have.property('endpoint', `https://${prop(config, 'snowProdInstance')}/${snowP}`));
+        it('should have endpoint', () => expect(this.config).to.have.property('endpoint', this.env.SNOW_ENDPOINT));
         it('should have username', () => expect(this.config)
           .to.have.property('username', this.env.SERVICE_NOW_USERNAME));
         it('should have password', () => expect(this.config)
