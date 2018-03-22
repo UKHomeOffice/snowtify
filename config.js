@@ -39,7 +39,7 @@ const testingFile       = !statusUpdate && loadFromFile(pe.PLUGIN_TESTING_FILE |
 const testing           = pe.PLUGIN_TESTING || pe.SNOW_TESTING || testingFile;
 const commentsFile      = !newDeployment && loadFromFile(pe.PLUGIN_COMMENTS_FILE || pe.SNOW_COMMENTS_FILE);
 const comments          = pe.PLUGIN_COMMENTS || pe.SNOW_COMMENTS || commentsFile;
-const deploymentOutcome = /^success$/i.test(pe.PLUGIN_DEPLOYMENT_OUTCOME || pe.SNOW_STATUS || pe.status);
+const deploymentOutcome = /^success$/i.test(pe.PLUGIN_DEPLOYMENT_OUTCOME || pe.SNOW_STATUS || pe.DRONE_BUILD_STATUS);
 const newChange         = newDeployment || !(statusUpdate || comments);
 const messageTemplates  = {
   openChange: {

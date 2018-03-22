@@ -241,7 +241,7 @@ describe('Config module', () => {
             SNOW_INT_ID_FILE:     '/test-files/snow-int-id',
             SNOW_DESC_FILE:       '/test-files/snow-desc',
             SNOW_COMMENTS_FILE:   '/test-files/snow-comments',
-            status:               'SUCCESS'
+            DRONE_BUILD_STATUS:   'SUCCESS'
           };
           this.env                      = env;
           this.intID                    = 'snow internal ID';
@@ -283,7 +283,7 @@ describe('Config module', () => {
             SNOW_INT_ID_FILE:     '/test-files/snow-int-id',
             SNOW_DESC_FILE:       '/test-files/snow-desc',
             SNOW_COMMENTS_FILE:   '/test-files/snow-comments',
-            status:               'FAILED'
+            DRONE_BUILD_STATUS:   'FAILED'
           };
           this.env                      = env;
           this.intID                    = 'snow internal ID';

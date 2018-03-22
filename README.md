@@ -199,7 +199,7 @@ equivalent file-based option. See
 This is used to indicate the outcome of a change. Set it to "success" (case insensitive) if the
 deployment succeeded, otherwise the change will be marked as a failure. If the utility is running as
 a drone plugin (as in the [example](#as-a-drone-plugin) above), this option can be omitted and the
-value will be picked up from the drone `status` environment variable instead.
+value will instead be picked up from the drone environment variable `DRONE_BUILD_STATUS`.
 
 ## Useful links
  - [Quay.io](https://quay.io/repository/ukhomeofficedigital/snowtify)
