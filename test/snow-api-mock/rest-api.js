@@ -7,7 +7,7 @@ const validFuture = str => (date => date.isValid() && date.isAfter(moment()))(mo
 const newID       = 'CHG1234567';
 
 module.exports = {
-  path:   '/api/now/table/x_fho_siam_integra_transactions',
+  path:   '/api/fho/siam_in/create_transaction',
   status: (req, res, next) => {
     if (req.headers.authorization !== 'Basic ' + new Buffer('snow-user:snow-pass').toString('base64')) {
       res.status(401);
