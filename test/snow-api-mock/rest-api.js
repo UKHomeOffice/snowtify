@@ -7,7 +7,7 @@ const validFuture = str => (date => date.isValid() && date.isAfter(moment()))(mo
 const newID       = 'CHG1234567';
 
 module.exports = {
-  path:   '/api/now/table/x_fho_siam_integra_transactions',
+  path:   '/api/fho/siam_in/create_transaction',
   status: (req, res, next) => {
     if (req.headers.authorization !== 'Basic ' + new Buffer('snow-user:snow-pass').toString('base64')) {
       res.status(401);
@@ -31,6 +31,7 @@ module.exports = {
     expect(body).to.have.property('messageid');
 
     if (body.messageid === 'HO_SIAM_IN_REST_CHG_POST_JSON') {
+      expect(body).to.have.property('external_identifier').that.is.a('string').and.is.not.empty;
       expect(body).to.have.property('payload').that.is.a('string');
       const json = JSON.parse(body.payload);
       expect(json).to.be.an('object');
@@ -51,7 +52,8 @@ module.exports = {
         .and.that.is.json.that.has.keys(['success', 'comments']);
       response = {
         result: {
-          status: body.internal_identifier.startsWith('!') || body.external_identifier.startsWith('!') ? '7' : '5'
+          'transaction_status': body.internal_identifier.startsWith('!') || body.external_identifier.startsWith('!')
+            ? 'ERROR' : 'PROCESSED'
         }
       };
     }

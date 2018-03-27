@@ -105,7 +105,7 @@ See
 
 #### SNOW_PATH | PLUGIN_PATH
 The path part of the URL for the ServiceNow API endpoint - the default is
-"api/now/table/x_fho_siam_integra_transactions".
+"api/fho/siam_in/create_transaction".
 
 #### SNOW_ENDPOINT | PLUGIN_ENDPOINT
 This defines the full exact endpoint for the ServiceNow API. If set it will override the other URL

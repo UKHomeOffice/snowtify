@@ -57,8 +57,9 @@ describe('index.js', () => {
         username:  'snow-user',
         password:  'snow-pass',
         message:   JSON.stringify({
-          messageid: 'HO_SIAM_IN_REST_CHG_POST_JSON',
-          payload:   JSON.stringify({
+          messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',
+          'external_identifier': 'ext ID',
+          payload:               JSON.stringify({
             title:       'new deployment',
             endTime:     '4000-01-01 13:09:08',
             description: 'something new',
@@ -189,8 +190,9 @@ describe('index.js', () => {
           username: 'snow-user',
           password: 'snow-pass',
           message:  JSON.stringify({
-            messageid: 'HO_SIAM_IN_REST_CHG_POST_JSON',
-            payload:   JSON.stringify({
+            messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',
+            'external_identifier': 'ext ID',
+            payload:               JSON.stringify({
               title:       'new deployment',
               endTime:     '4000-01-01 13:09:08',
               description: 'something new',
@@ -218,8 +220,9 @@ describe('index.js', () => {
             username:  'snow-user',
             password:  'snow-pass',
             message:   JSON.stringify({
-              messageid: 'HO_SIAM_IN_REST_CHG_POST_JSON',
-              payload:   JSON.stringify({
+              messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',
+              'external_identifier': 'ext ID',
+              payload:               JSON.stringify({
                 title:       'new deployment',
                 endTime:     '2000-01-01 13:09:08',
                 description: 'something new',
@@ -262,7 +265,7 @@ describe('index.js', () => {
             process.exit.resetHistory();
           });
 
-          it('should not have the expected "5" value in the "status" field and report a 400 Bad Request', () =>
+          it('should show "ERROR" in the "transaction_status" field and report a 400 Bad Request', () =>
             proxyquire('..', { './config': config })
               .then(() => {
                 throw new Error('should have failed with an "Bad Request" error, but the promise resolved');
@@ -271,8 +274,7 @@ describe('index.js', () => {
                 .which.includes({ status: 400, message: 'Bad Request' })
                 .and.has.nested.property('response.text')
                 .which.is.json
-                .and.has.a.nested.property('result.status')
-                .which.does.not.equal('5')
+                .and.has.a.nested.property('result.transaction_status', 'ERROR')
               ));
           it('should exit with an error', () => expect(process.exit).to.have.been.calledOnce.and.calledWith(400));
         });

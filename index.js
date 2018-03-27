@@ -31,8 +31,7 @@ const report = res => {
         console.log(`Notification successfully sent - new change ID: "${result.internal_identifier}"`);
         return res;
       }
-      // check if status update was processed (5 obviously means OK)
-    } else if (result.status === '5') {
+    } else if (result.transaction_status === 'PROCESSED') {
       console.log('Notification successfully sent - change', config.success ? 'completed' : 'cancelled');
       return res;
     }

@@ -27,7 +27,7 @@ const password          = pe.PLUGIN_PASSWORD || pe.SERVICE_NOW_PASSWORD || pe.SN
 const intIDFile         = pe.PLUGIN_INTERNAL_ID_FILE || pe.SNOW_INT_ID_FILE;
 const internalID        = pe.PLUGIN_INTERNAL_ID || pe.SNOW_INTERNAL_ID || loadFromFile(intIDFile);
 const externalID        = pe.PLUGIN_EXTERNAL_ID || pe.SNOW_EXTERNAL_ID || `${username}-${repo}-${buildNumber}`;
-const snowPath          = pe.PLUGIN_PATH || pe.SNOW_PATH || 'api/now/table/x_fho_siam_integra_transactions';
+const snowPath          = pe.PLUGIN_PATH || pe.SNOW_PATH || 'api/fho/siam_in/create_transaction';
 const endpoint          = pe.PLUGIN_ENDPOINT || pe.SNOW_ENDPOINT;
 const newDeployment     = /^deployment$/i.test(pe.PLUGIN_NOTIFICATION_TYPE || pe.SNOW_NOTIFICATION_TYPE);
 const statusUpdate      = /^(status)? *update$/i.test(pe.PLUGIN_NOTIFICATION_TYPE || pe.SNOW_NOTIFICATION_TYPE);
@@ -43,7 +43,8 @@ const deploymentOutcome = /^success$/i.test(pe.PLUGIN_DEPLOYMENT_OUTCOME || pe.S
 const newChange         = newDeployment || !(statusUpdate || comments);
 const messageTemplates  = {
   openChange: {
-    messageid: 'HO_SIAM_IN_REST_CHG_POST_JSON',
+    messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',
+    'external_identifier': externalID,
     payload:   JSON.stringify({
       title:       title,
       endTime:     endTime,
