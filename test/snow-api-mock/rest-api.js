@@ -52,7 +52,8 @@ module.exports = {
         .and.that.is.json.that.has.keys(['success', 'comments']);
       response = {
         result: {
-          status: body.internal_identifier.startsWith('!') || body.external_identifier.startsWith('!') ? '7' : '5'
+          'transaction_status': body.internal_identifier.startsWith('!') || body.external_identifier.startsWith('!')
+            ? 'ERROR' : 'PROCESSED'
         }
       };
     }
