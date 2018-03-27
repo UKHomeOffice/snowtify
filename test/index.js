@@ -57,8 +57,9 @@ describe('index.js', () => {
         username:  'snow-user',
         password:  'snow-pass',
         message:   JSON.stringify({
-          messageid: 'HO_SIAM_IN_REST_CHG_POST_JSON',
-          payload:   JSON.stringify({
+          messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',
+          'external_identifier': 'ext ID',
+          payload:               JSON.stringify({
             title:       'new deployment',
             endTime:     '4000-01-01 13:09:08',
             description: 'something new',
@@ -189,8 +190,9 @@ describe('index.js', () => {
           username: 'snow-user',
           password: 'snow-pass',
           message:  JSON.stringify({
-            messageid: 'HO_SIAM_IN_REST_CHG_POST_JSON',
-            payload:   JSON.stringify({
+            messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',
+            'external_identifier': 'ext ID',
+            payload:               JSON.stringify({
               title:       'new deployment',
               endTime:     '4000-01-01 13:09:08',
               description: 'something new',
@@ -218,8 +220,9 @@ describe('index.js', () => {
             username:  'snow-user',
             password:  'snow-pass',
             message:   JSON.stringify({
-              messageid: 'HO_SIAM_IN_REST_CHG_POST_JSON',
-              payload:   JSON.stringify({
+              messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',
+              'external_identifier': 'ext ID',
+              payload:               JSON.stringify({
                 title:       'new deployment',
                 endTime:     '2000-01-01 13:09:08',
                 description: 'something new',

@@ -103,10 +103,13 @@ describe('Config module', () => {
           .to.have.property('endpoint', `${this.env.PLUGIN_PROTOCOL}://${this.env.PLUGIN_PROD_HOST}/${snowP}`));
         it('should have username', () => expect(this.config).to.have.property('username', this.env.PLUGIN_USERNAME));
         it('should have password', () => expect(this.config).to.have.property('password', this.env.PLUGIN_PASSWORD));
-        it('should have a payload object', () => expect(this.config).to.have.property('message')
+        it('should have a message object', () => expect(this.config).to.have.property('message')
           .which.is.an('object')
-          .that.has.property('messageid', 'HO_SIAM_IN_REST_CHG_POST_JSON'));
-        it('should have a message in the payload', () => expect(this.config.message).to.have.property('payload')
+          .that.includes({
+            'messageid':           'HO_SIAM_IN_REST_CHG_POST_JSON',
+            'external_identifier': this.env.PLUGIN_EXTERNAL_ID
+          }));
+        it('should have a payload in the message', () => expect(this.config.message).to.have.property('payload')
           .that.is.json.and.an('object').which.deep.equals({
             title: this.env.PLUGIN_TITLE,
             endTime: this.env.PLUGIN_END_TIME,
@@ -209,6 +212,7 @@ describe('Config module', () => {
           files[env.SNOW_DESC_FILE] = this.desc;
           global.injected           = { env: env };
           this.config               = proxyquire('../config', { fs: ffs(files), moment: fmoment });
+          this.extID                = `${env.SNOW_USER}-${env.DRONE_REPO_NAME}-${env.DRONE_BUILD_NUMBER}`;
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
         it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', true));
@@ -220,13 +224,16 @@ describe('Config module', () => {
           .to.have.property('password', this.env.SNOW_PASS));
         it('should have a payload object', () => expect(this.config).to.have.property('message')
           .which.is.an('object')
-          .that.has.property('messageid', 'HO_SIAM_IN_REST_CHG_POST_JSON'));
-        it('should have a message in the payload', () => expect(this.config.message).to.have.property('payload')
+          .that.includes({
+            'messageid':           'HO_SIAM_IN_REST_CHG_POST_JSON',
+            'external_identifier': this.extID
+          }));
+        it('should have a payload in the message', () => expect(this.config.message).to.have.property('payload')
           .that.is.json.and.an('object').which.deep.equals({
             title: `Deployment #${this.env.DRONE_BUILD_NUMBER} of ${this.env.DRONE_REPO_NAME}`,
             endTime: '2000-01-01 13:30:00',
             description: this.desc,
-            supplierRef: `${this.env.SNOW_USER}-${this.env.DRONE_REPO_NAME}-${this.env.DRONE_BUILD_NUMBER}`
+            supplierRef: this.extID
           }));
       });
 

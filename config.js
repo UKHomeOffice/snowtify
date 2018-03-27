@@ -43,7 +43,8 @@ const deploymentOutcome = /^success$/i.test(pe.PLUGIN_DEPLOYMENT_OUTCOME || pe.S
 const newChange         = newDeployment || !(statusUpdate || comments);
 const messageTemplates  = {
   openChange: {
-    messageid: 'HO_SIAM_IN_REST_CHG_POST_JSON',
+    messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',
+    'external_identifier': externalID,
     payload:   JSON.stringify({
       title:       title,
       endTime:     endTime,

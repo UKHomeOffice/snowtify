@@ -31,6 +31,7 @@ module.exports = {
     expect(body).to.have.property('messageid');
 
     if (body.messageid === 'HO_SIAM_IN_REST_CHG_POST_JSON') {
+      expect(body).to.have.property('external_identifier').that.is.a('string').and.is.not.empty;
       expect(body).to.have.property('payload').that.is.a('string');
       const json = JSON.parse(body.payload);
       expect(json).to.be.an('object');
