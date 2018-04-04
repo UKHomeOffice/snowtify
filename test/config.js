@@ -163,8 +163,14 @@ describe('Config module', () => {
             PLUGIN_PROD_HOST:          'prod.com',
             PLUGIN_TEST_HOST:          'test.com',
             PLUGIN_SEND_TO_PROD:       'true',
-            PLUGIN_USERNAME:           'user',
-            PLUGIN_PASSWORD:           'pass',
+            SNOW_USER:                 'user',
+            SNOW_TEST_USER:            'test-user',
+            SNOW_PROD_USER:            'prod-user',
+            SNOW_PASS:                 'pass',
+            SNOW_TEST_PASS:            'test-pass',
+            SNOW_PROD_PASS:            'prod-pass',
+            PLUGIN_USERNAME:           'plugin-user',
+            PLUGIN_PASSWORD:           'plugin-pass',
             PLUGIN_INTERNAL_ID:        'int-id',
             PLUGIN_EXTERNAL_ID:        'ext-id',
             PLUGIN_NOTIFICATION_TYPE:  'StatusUpdate',
@@ -203,7 +209,11 @@ describe('Config module', () => {
             DRONE_BUILD_NUMBER: 42,
             DEPLOY_TO:          'prod',
             SNOW_USER:          'user',
+            SNOW_TEST_USER:     'test-user',
+            SNOW_PROD_USER:     'prod-user',
             SNOW_PASS:          'pass',
+            SNOW_TEST_PASS:     'test-pass',
+            SNOW_PROD_PASS:     'prod-pass',
             SNOW_DESC_FILE:     '/test-files/snow-desc'
           };
           this.env                  = env;
@@ -212,16 +222,14 @@ describe('Config module', () => {
           files[env.SNOW_DESC_FILE] = this.desc;
           global.injected           = { env: env };
           this.config               = proxyquire('../config', { fs: ffs(files), moment: fmoment });
-          this.extID                = `${env.SNOW_USER}-${env.DRONE_REPO_NAME}-${env.DRONE_BUILD_NUMBER}`;
+          this.extID                = `${env.SNOW_PROD_USER}-${env.DRONE_REPO_NAME}-${env.DRONE_BUILD_NUMBER}`;
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
         it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', true));
         it('should have endpoint', () => expect(this.config)
           .to.have.property('endpoint', `https://${prop(config, 'snowProdInstance')}/${snowP}`));
-        it('should have username', () => expect(this.config)
-          .to.have.property('username', this.env.SNOW_USER));
-        it('should have password', () => expect(this.config)
-          .to.have.property('password', this.env.SNOW_PASS));
+        it('should have prod user', () => expect(this.config).to.have.property('username', this.env.SNOW_PROD_USER));
+        it('should have prod pass', () => expect(this.config).to.have.property('password', this.env.SNOW_PROD_PASS));
         it('should have a payload object', () => expect(this.config).to.have.property('message')
           .which.is.an('object')
           .that.includes({
@@ -240,15 +248,19 @@ describe('Config module', () => {
       describe('a successful deployment notification returns an object which', function () {
         before(() => {
           const env = {
-            DRONE_REPO_NAME:      'my-repo',
-            DRONE_BUILD_NUMBER:   42,
-            SNOW_ENDPOINT:        'ftp://prety.sure/this/would.not?work=though',
-            SERVICE_NOW_USERNAME: 'user',
-            SERVICE_NOW_PASSWORD: 'pass',
-            SNOW_INT_ID_FILE:     '/test-files/snow-int-id',
-            SNOW_DESC_FILE:       '/test-files/snow-desc',
-            SNOW_COMMENTS_FILE:   '/test-files/snow-comments',
-            DRONE_BUILD_STATUS:   'SUCCESS'
+            DRONE_REPO_NAME:    'my-repo',
+            DRONE_BUILD_NUMBER: 42,
+            SNOW_ENDPOINT:      'ftp://prety.sure/this/would.not?work=though',
+            SNOW_USER:          'user',
+            SNOW_TEST_USER:     'test-user',
+            SNOW_PROD_USER:     'prod-user',
+            SNOW_PASS:          'pass',
+            SNOW_TEST_PASS:     'test-pass',
+            SNOW_PROD_PASS:     'prod-pass',
+            SNOW_INT_ID_FILE:   '/test-files/snow-int-id',
+            SNOW_DESC_FILE:     '/test-files/snow-desc',
+            SNOW_COMMENTS_FILE: '/test-files/snow-comments',
+            DRONE_BUILD_STATUS: 'SUCCESS'
           };
           this.env                      = env;
           this.intID                    = 'snow internal ID';
@@ -264,10 +276,8 @@ describe('Config module', () => {
         it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', false));
         it('should indicate the update status', () => expect(this.config).to.have.property('success', true));
         it('should have endpoint', () => expect(this.config).to.have.property('endpoint', this.env.SNOW_ENDPOINT));
-        it('should have username', () => expect(this.config)
-          .to.have.property('username', this.env.SERVICE_NOW_USERNAME));
-        it('should have password', () => expect(this.config)
-          .to.have.property('password', this.env.SERVICE_NOW_PASSWORD));
+        it('should have test user', () => expect(this.config).to.have.property('username', this.env.SNOW_TEST_USER));
+        it('should have test pass', () => expect(this.config).to.have.property('password', this.env.SNOW_TEST_PASS));
         it('should have a payload object', () => expect(this.config).to.have.property('message')
           .which.is.an('object')
           .that.has.property('messageid', 'HO_SIAM_IN_REST_CHG_UPDATE_JSON'));
@@ -275,7 +285,7 @@ describe('Config module', () => {
           .to.have.property('internal_identifier', this.intID));
         it('should have an external ID in the payload', () => expect(this.config.message)
           .to.have.property('external_identifier',
-            `${this.env.SERVICE_NOW_USERNAME}-${this.env.DRONE_REPO_NAME}-${this.env.DRONE_BUILD_NUMBER}`));
+            `${this.env.SNOW_TEST_USER}-${this.env.DRONE_REPO_NAME}-${this.env.DRONE_BUILD_NUMBER}`));
         it('should have a message in the payload', () => expect(this.config.message).to.have.property('payload')
           .that.is.json.and.an('object').which.deep.equals({ success: 'true', comments: this.comments }));
       });
@@ -283,14 +293,14 @@ describe('Config module', () => {
       describe('a failed deployment notification returns an object which', function () {
         before(() => {
           const env = {
-            DRONE_REPO_NAME:      'my-repo',
-            DRONE_BUILD_NUMBER:   42,
-            SERVICE_NOW_USERNAME: 'user',
-            SERVICE_NOW_PASSWORD: 'pass',
-            SNOW_INT_ID_FILE:     '/test-files/snow-int-id',
-            SNOW_DESC_FILE:       '/test-files/snow-desc',
-            SNOW_COMMENTS_FILE:   '/test-files/snow-comments',
-            DRONE_BUILD_STATUS:   'FAILED'
+            DRONE_REPO_NAME:    'my-repo',
+            DRONE_BUILD_NUMBER: 42,
+            SNOW_USER:          'user',
+            SNOW_PASS:          'pass',
+            SNOW_INT_ID_FILE:   '/test-files/snow-int-id',
+            SNOW_DESC_FILE:     '/test-files/snow-desc',
+            SNOW_COMMENTS_FILE: '/test-files/snow-comments',
+            DRONE_BUILD_STATUS: 'FAILED'
           };
           this.env                      = env;
           this.intID                    = 'snow internal ID';
@@ -307,10 +317,8 @@ describe('Config module', () => {
         it('should indicate the update status', () => expect(this.config).to.have.property('success', false));
         it('should have endpoint', () => expect(this.config)
           .to.have.property('endpoint', `https://${prop(config, 'snowTestInstance')}/${snowP}`));
-        it('should have username', () => expect(this.config)
-          .to.have.property('username', this.env.SERVICE_NOW_USERNAME));
-        it('should have password', () => expect(this.config)
-          .to.have.property('password', this.env.SERVICE_NOW_PASSWORD));
+        it('should have username', () => expect(this.config).to.have.property('username', this.env.SNOW_USER));
+        it('should have password', () => expect(this.config).to.have.property('password', this.env.SNOW_PASS));
         it('should have a payload object', () => expect(this.config).to.have.property('message')
           .which.is.an('object')
           .that.has.property('messageid', 'HO_SIAM_IN_REST_CHG_UPDATE_JSON'));
@@ -318,7 +326,7 @@ describe('Config module', () => {
           .to.have.property('internal_identifier', this.intID));
         it('should have an external ID in the payload', () => expect(this.config.message)
           .to.have.property('external_identifier',
-            `${this.env.SERVICE_NOW_USERNAME}-${this.env.DRONE_REPO_NAME}-${this.env.DRONE_BUILD_NUMBER}`));
+            `${this.env.SNOW_USER}-${this.env.DRONE_REPO_NAME}-${this.env.DRONE_BUILD_NUMBER}`));
         it('should have a message in the payload', () => expect(this.config.message).to.have.property('payload')
           .that.is.json.and.an('object').which.deep.equals({ success: 'false', comments: this.comments }));
       });
