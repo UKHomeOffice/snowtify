@@ -71,6 +71,84 @@ docker run quay.io/repository/ukhomeofficedigital/snowtify \
 The following options exist to control - the kind of notification, and the details - that get sent
 to ServiceNow (snow):
 
+### ServiceNow target instance
+It is possible to switch between the "production" and "testing" ServiceNow instances - or to specify
+completely custom instance endpoints. The authentication details can be explicitly specified, or a
+set can be provided, and the utility will guess which username and password best suit the
+notification (based on the
+[SNOW_DEPLOY_TO | PLUGIN_SEND_TO_PROD | DEPLOY_TO](#snow_deploy_to--plugin_send_to_prod--deploy_to)
+setting).
+
+#### ServiceNow endpoints
+The endpoint (and thus the ServiceNow instance) can be set explicitly using the following option
+([SNOW_ENDPOINT | PLUGIN_ENDPOINT](#snow_deploy_to--plugin_endpoint)), otherwise the utility will
+choose the endpoint based on the other options in this section.
+
+##### SNOW_ENDPOINT | PLUGIN_ENDPOINT
+This defines the full exact endpoint for the ServiceNow API. If set it will override the other
+options in this section.
+
+##### SNOW_PROTOCOL | PLUGIN_PROTOCOL
+The protocol part of the URL for the ServiceNow API endpoint - the default is "https".
+
+##### SNOW_PROD_HOST | PLUGIN_PROD_HOST
+The host part of the URL for the production version of the ServiceNow API endpoint - the default is
+"lssiprod.service-now.com". Whether this host, or the Test host (described below) is used to construct
+the URL used for the ServiceNow API endpoint can be configured by the `DEPLOY_TO` settings. See
+ - [SNOW_TEST_HOST | PLUGIN_TEST_HOST](#snow_test_host--plugin_test_host), and
+ - [SNOW_DEPLOY_TO | PLUGIN_SEND_TO_PROD | DEPLOY_TO](#snow_deploy_to--plugin_send_to_prod--deploy_to).
+
+##### SNOW_TEST_HOST | PLUGIN_TEST_HOST
+The host part of the URL for the sandbox version of the ServiceNow API endpoint - the default is
+"lssitest.service-now.com". Whether this host, or the Production host (described above) is used to
+construct the URL used for the ServiceNow API endpoint can be configured by the `DEPLOY_TO` settings.
+See
+ - [SNOW_PROD_HOST | PLUGIN_PROD_HOST](#snow_prod_host--plugin_prod_host), and
+ - [SNOW_DEPLOY_TO | PLUGIN_SEND_TO_PROD | DEPLOY_TO](#snow_deploy_to--plugin_send_to_prod--deploy_to).
+
+##### SNOW_PATH | PLUGIN_PATH
+The path part of the URL for the ServiceNow API endpoint - the default is
+"api/fho/siam_in/create_transaction".
+
+##### SNOW_DEPLOY_TO | PLUGIN_SEND_TO_PROD | DEPLOY_TO
+If set to "prod" (case insensitive), specifies the notification is to be sent to the production
+URL - the default is to send notifications to the test URL. See 
+ - [SNOW_PROD_HOST | PLUGIN_PROD_HOST](#snow_prod_host--plugin_prod_host),
+ - [SNOW_TEST_HOST | PLUGIN_TEST_HOST](#snow_test_host--plugin_test_host).
+
+#### Authentication options
+The utility will decide which credentials to use based on the following order of preference:
+ 1. `USERNAME`, `PASSWORD` configured directly against the drone plugin
+ 2. `PROD_USER`, `PROD_PASS` configured directly against the drone plugin, but only for
+ "_production_" deployments
+ 3. `SNOW_PROD_USER`, `SNOW_PROD_PASS` environment variables are set, but only for "_production_"
+ deployments
+ 4. `TEST_USER`, `TEST_PASS` configured directly against the drone plugin, whenever not deploying
+ to "production"
+ 5. `SNOW_TEST_USER`, `SNOW_TEST_PASS` environment variables are set, whenever not deploying to
+ "production"
+ 6. `SNOW_USER`, `SNOW_PASS` environment variables are set
+
+##### SNOW_USER | PLUGIN_USERNAME
+The username used for (basic) authentication to the ServiceNow API.
+
+##### SNOW_TEST_USER | PLUGIN_TEST_USER
+The username used for (basic) authentication to the "TEST" instance of ServiceNow API.
+
+##### SNOW_PROD_USER | PLUGIN_PROD_USER
+The username used for (basic) authentication to the "PROD" instance of ServiceNow API.
+
+##### SNOW_PASS | PLUGIN_PASSWORD
+The password used for (basic) authentication to the ServiceNow API.
+
+##### SNOW_TEST_PASS | PLUGIN_TEST_PASS
+The password used for (basic) authentication to the "TEST" instance of ServiceNow API.
+
+##### SNOW_PROD_PASS | PLUGIN_PROD_PASS
+The password used for (basic) authentication to the "PROD" instance of ServiceNow API.
+
+### Message content and other options
+
 #### REPO_NAME | DRONE_REPO_NAME
 When run as a drone plugin, drone sets this automatically. Otherwise this can be set to indicate the
 project repository name, which is used to build a default external ID and change title if either are
@@ -85,53 +163,10 @@ title if either are not explicitly provided. See
  - [SNOW_EXTERNAL_ID | PLUGIN_EXTERNAL_ID](#snow_external_id--plugin_external_id), and
  - [SNOW_TITLE | PLUGIN_TITLE](#snow_title--plugin_title).
 
-#### SNOW_PROTOCOL | PLUGIN_PROTOCOL
-The protocol part of the URL for the ServiceNow API endpoint - the default is "https".
-
-#### SNOW_PROD_HOST | PLUGIN_PROD_HOST
-The host part of the URL for the production version of the ServiceNow API endpoint - the default is
-"lssiprod.service-now.com". Whether this host, or the Test host (described below) is used to construct
-the URL used for the ServiceNow API endpoint can be configured by the `DEPLOY_TO` settings. See
- - [SNOW_TEST_HOST | PLUGIN_TEST_HOST](#snow_test_host--plugin_test_host), and
- - [SNOW_DEPLOY_TO | PLUGIN_DEPLOY_TO | DEPLOY_TO](#snow_deploy_to--plugin_deploy_to--deploy_to).
-
-#### SNOW_TEST_HOST | PLUGIN_TEST_HOST
-The host part of the URL for the sandbox version of the ServiceNow API endpoint - the default is
-"lssitest.service-now.com". Whether this host, or the Production host (described above) is used to
-construct the URL used for the ServiceNow API endpoint can be configured by the `DEPLOY_TO` settings.
-See
- - [SNOW_PROD_HOST | PLUGIN_PROD_HOST](#snow_prod_host--plugin_prod_host), and
- - [SNOW_DEPLOY_TO | PLUGIN_DEPLOY_TO | DEPLOY_TO](#snow_deploy_to--plugin_deploy_to--deploy_to).
-
-#### SNOW_PATH | PLUGIN_PATH
-The path part of the URL for the ServiceNow API endpoint - the default is
-"api/fho/siam_in/create_transaction".
-
-#### SNOW_ENDPOINT | PLUGIN_ENDPOINT
-This defines the full exact endpoint for the ServiceNow API. If set it will override the other URL
-options, and the `DEPLOY_TO` settings. See
- - [SNOW_PROTOCOL | PLUGIN_PROTOCOL](#snow_protocol--plugin_protocol),
- - [SNOW_PROD_HOST | PLUGIN_PROD_HOST](#snow_prod_host--plugin_prod_host),
- - [SNOW_TEST_HOST | PLUGIN_TEST_HOST](#snow_test_host--plugin_test_host),
- - [SNOW_PATH | PLUGIN_PATH](#snow_path--plugin_path), and
- - [SNOW_DEPLOY_TO | PLUGIN_DEPLOY_TO | DEPLOY_TO](#snow_deploy_to--plugin_deploy_to--deploy_to).
-
-#### SNOW_DEPLOY_TO | PLUGIN_DEPLOY_TO | DEPLOY_TO
-If set to "prod" (case insensitive), specifies the notification is to be sent to the production
-URL - the default is to send notifications to the test URL. See 
- - [SNOW_PROD_HOST | PLUGIN_PROD_HOST](#snow_prod_host--plugin_prod_host),
- - [SNOW_TEST_HOST | PLUGIN_TEST_HOST](#snow_test_host--plugin_test_host).
-
-#### SERVICE_NOW_USERNAME | SNOW_USER | PLUGIN_USERNAME
-The username used for (basic) authentication to the ServiceNow API.
-
-#### SERVICE_NOW_PASSWORD | SNOW_PASS | PLUGIN_PASSWORD
-The password used for (basic) authentication to the ServiceNow API.
-
 #### SNOW_EXTERNAL_ID | PLUGIN_EXTERNAL_ID
 A project/build ID for the current CD pipeline. If not provided a default is constructed using the
-template `${SERVICE_NOW_USERNAME}-${REPO_NAME}-${BUILD_NUMBER}`. See
- - [SERVICE_NOW_USERNAME | SNOW_USER | PLUGIN_USERNAME](#service_now_username--snow_user--plugin_username),
+template `${username}-${REPO_NAME}-${BUILD_NUMBER}`. See
+ - [Authentication options](#authentication-options),
  - [REPO_NAME | DRONE_REPO_NAME](#repo_name--drone_repo_name), and
  - [BUILD_NUMBER | DRONE_BUILD_NUMBER](#build_number--drone_build_number).
 
