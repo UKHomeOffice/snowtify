@@ -44,7 +44,7 @@ pipeline:
   # check a new change can be opened
   e2e_test_open:
     image: '${DOCKER_REPO}/${DOCKER_PATH}/${NAME}:${MAJOR}.${MINOR}.${PATCH}-${DRONE_COMMIT:0:10}'
-    secrets: [ service_now_username, service_now_password ]
+    secrets: [ snow_user, snow_pass ]
     description: 'End-to-end test for the ServiceNow CD utility. Build #${DRONE_BUILD_NUMBER}'
     when:
       event: push
@@ -53,7 +53,7 @@ pipeline:
   # check the change can be closed
   e2e_test_close:
     image: '${DOCKER_REPO}/${DOCKER_PATH}/${NAME}:${MAJOR}.${MINOR}.${PATCH}-${DRONE_COMMIT:0:10}'
-    secrets: [ service_now_username, service_now_password ]
+    secrets: [ snow_user, snow_pass ]
     comments: 'Successfully tested build #${DRONE_BUILD_NUMBER}'
     deployment_outcome: success
     when:
