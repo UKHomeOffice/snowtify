@@ -124,7 +124,6 @@ describe('index.js', () => {
           message:  JSON.stringify({
             messageid:             'HO_SIAM_IN_REST_CHG_UPDATE_JSON',
             'internal_identifier': 'int ID',
-            'external_identifier': 'ext ID',
             payload:               { success: true, comments: 'All good' }
           })
         };
@@ -145,7 +144,6 @@ describe('index.js', () => {
           message:  JSON.stringify({
             messageid:             'HO_SIAM_IN_REST_CHG_UPDATE_JSON',
             'internal_identifier': 'int ID',
-            'external_identifier': 'ext ID',
             payload:               { success: false, comments: 'Something bad happened' }
           })
         };
@@ -255,7 +253,6 @@ describe('index.js', () => {
             message:    JSON.stringify({
               messageid:             'HO_SIAM_IN_REST_CHG_UPDATE_JSON',
               'internal_identifier': '! a proper int ID',
-              'external_identifier': '! a proper ext ID',
               payload:               { success: true, comments: 'All good' }
             })
           };

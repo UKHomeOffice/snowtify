@@ -47,13 +47,11 @@ module.exports = {
     } else {
       expect(body).to.have.property('messageid', 'HO_SIAM_IN_REST_CHG_UPDATE_JSON');
       expect(body).to.have.property('internal_identifier').that.is.a('string').and.is.not.empty;
-      expect(body).to.have.property('external_identifier').that.is.a('string').and.is.not.empty;
       expect(body).to.have.property('payload').that.is.an('object')
         .and.that.has.keys(['success', 'comments']);
       response = {
         result: {
-          'transaction_status': body.internal_identifier.startsWith('!') || body.external_identifier.startsWith('!')
-            ? 'ERROR' : 'PROCESSED'
+          'transaction_status': body.internal_identifier.startsWith('!') ? 'ERROR' : 'PROCESSED'
         }
       };
     }

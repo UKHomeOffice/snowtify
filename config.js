@@ -59,7 +59,6 @@ const messageTemplates  = {
   update: {
     messageid: 'HO_SIAM_IN_REST_CHG_UPDATE_JSON',
     'internal_identifier': internalID,
-    'external_identifier': externalID,
     payload:               {
       success:  deploymentOutcome ? 'true' : 'false',
       comments: comments

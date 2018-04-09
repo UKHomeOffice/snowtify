@@ -150,8 +150,6 @@ describe('Config module', () => {
           .that.has.property('messageid', 'HO_SIAM_IN_REST_CHG_UPDATE_JSON'));
         it('should have an internal ID in the payload', () => expect(this.config.message)
           .to.have.property('internal_identifier', this.env.PLUGIN_INTERNAL_ID));
-        it('should have an external ID in the payload', () => expect(this.config.message)
-          .to.have.property('external_identifier', this.env.PLUGIN_EXTERNAL_ID));
         it('should have a message in the payload', () => expect(this.config.message).to.have.property('payload')
           .that.is.an('object').which.deep.equals({ success: 'true', comments: this.env.PLUGIN_COMMENTS }));
       });
@@ -193,8 +191,6 @@ describe('Config module', () => {
           .that.has.property('messageid', 'HO_SIAM_IN_REST_CHG_UPDATE_JSON'));
         it('should have an internal ID in the payload', () => expect(this.config.message)
           .to.have.property('internal_identifier', this.env.PLUGIN_INTERNAL_ID));
-        it('should have an external ID in the payload', () => expect(this.config.message)
-          .to.have.property('external_identifier', this.env.PLUGIN_EXTERNAL_ID));
         it('should have a message in the payload', () => expect(this.config.message).to.have.property('payload')
           .that.is.an('object').which.deep.equals({ success: 'false', comments: this.env.PLUGIN_COMMENTS }));
       });
@@ -283,9 +279,6 @@ describe('Config module', () => {
           .that.has.property('messageid', 'HO_SIAM_IN_REST_CHG_UPDATE_JSON'));
         it('should have an internal ID in the payload', () => expect(this.config.message)
           .to.have.property('internal_identifier', this.intID));
-        it('should have an external ID in the payload', () => expect(this.config.message)
-          .to.have.property('external_identifier',
-            `${this.env.SNOW_TEST_USER}-${this.env.DRONE_REPO_NAME}-${this.env.DRONE_BUILD_NUMBER}`));
         it('should have a message in the payload', () => expect(this.config.message).to.have.property('payload')
           .that.is.an('object').which.deep.equals({ success: 'true', comments: this.comments }));
       });
@@ -324,9 +317,6 @@ describe('Config module', () => {
           .that.has.property('messageid', 'HO_SIAM_IN_REST_CHG_UPDATE_JSON'));
         it('should have an internal ID in the payload', () => expect(this.config.message)
           .to.have.property('internal_identifier', this.intID));
-        it('should have an external ID in the payload', () => expect(this.config.message)
-          .to.have.property('external_identifier',
-            `${this.env.SNOW_USER}-${this.env.DRONE_REPO_NAME}-${this.env.DRONE_BUILD_NUMBER}`));
         it('should have a message in the payload', () => expect(this.config.message).to.have.property('payload')
           .that.is.an('object').which.deep.equals({ success: 'false', comments: this.comments }));
       });
