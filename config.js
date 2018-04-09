@@ -49,24 +49,27 @@ const messageTemplates  = {
   openChange: {
     messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',
     'external_identifier': externalID,
-    payload:   JSON.stringify({
+    payload:               {
       title:       title,
       endTime:     endTime,
       description: description,
       supplierRef: externalID,
-      testing:     testing || undefined
-    })
+    }
   },
   update: {
     messageid: 'HO_SIAM_IN_REST_CHG_UPDATE_JSON',
     'internal_identifier': internalID,
     'external_identifier': externalID,
-    payload:               JSON.stringify({
+    payload:               {
       success:  deploymentOutcome ? 'true' : 'false',
       comments: comments
-    })
+    }
   }
 };
+
+if (testing) {
+  messageTemplates.openChange.payload.testing = testing;
+}
 
 module.exports = {
   newChange: newChange,

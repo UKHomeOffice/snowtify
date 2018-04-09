@@ -110,7 +110,7 @@ describe('Config module', () => {
             'external_identifier': this.env.PLUGIN_EXTERNAL_ID
           }));
         it('should have a payload in the message', () => expect(this.config.message).to.have.property('payload')
-          .that.is.json.and.an('object').which.deep.equals({
+          .that.is.an('object').which.deep.equals({
             title: this.env.PLUGIN_TITLE,
             endTime: this.env.PLUGIN_END_TIME,
             description: this.env.PLUGIN_DESCRIPTION,
@@ -153,7 +153,7 @@ describe('Config module', () => {
         it('should have an external ID in the payload', () => expect(this.config.message)
           .to.have.property('external_identifier', this.env.PLUGIN_EXTERNAL_ID));
         it('should have a message in the payload', () => expect(this.config.message).to.have.property('payload')
-          .that.is.json.and.an('object').which.deep.equals({ success: 'true', comments: this.env.PLUGIN_COMMENTS }));
+          .that.is.an('object').which.deep.equals({ success: 'true', comments: this.env.PLUGIN_COMMENTS }));
       });
 
       describe('a failed deployment notification returns an object which', function () {
@@ -196,7 +196,7 @@ describe('Config module', () => {
         it('should have an external ID in the payload', () => expect(this.config.message)
           .to.have.property('external_identifier', this.env.PLUGIN_EXTERNAL_ID));
         it('should have a message in the payload', () => expect(this.config.message).to.have.property('payload')
-          .that.is.json.and.an('object').which.deep.equals({ success: 'false', comments: this.env.PLUGIN_COMMENTS }));
+          .that.is.an('object').which.deep.equals({ success: 'false', comments: this.env.PLUGIN_COMMENTS }));
       });
     });
 
@@ -237,7 +237,7 @@ describe('Config module', () => {
             'external_identifier': this.extID
           }));
         it('should have a payload in the message', () => expect(this.config.message).to.have.property('payload')
-          .that.is.json.and.an('object').which.deep.equals({
+          .that.is.an('object').which.deep.equals({
             title: `Deployment #${this.env.DRONE_BUILD_NUMBER} of ${this.env.DRONE_REPO_NAME}`,
             endTime: '2000-01-01 13:30:00',
             description: this.desc,
@@ -287,7 +287,7 @@ describe('Config module', () => {
           .to.have.property('external_identifier',
             `${this.env.SNOW_TEST_USER}-${this.env.DRONE_REPO_NAME}-${this.env.DRONE_BUILD_NUMBER}`));
         it('should have a message in the payload', () => expect(this.config.message).to.have.property('payload')
-          .that.is.json.and.an('object').which.deep.equals({ success: 'true', comments: this.comments }));
+          .that.is.an('object').which.deep.equals({ success: 'true', comments: this.comments }));
       });
 
       describe('a failed deployment notification returns an object which', function () {
@@ -328,7 +328,7 @@ describe('Config module', () => {
           .to.have.property('external_identifier',
             `${this.env.SNOW_USER}-${this.env.DRONE_REPO_NAME}-${this.env.DRONE_BUILD_NUMBER}`));
         it('should have a message in the payload', () => expect(this.config.message).to.have.property('payload')
-          .that.is.json.and.an('object').which.deep.equals({ success: 'false', comments: this.comments }));
+          .that.is.an('object').which.deep.equals({ success: 'false', comments: this.comments }));
       });
     });
   });
