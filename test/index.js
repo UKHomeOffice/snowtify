@@ -59,13 +59,13 @@ describe('index.js', () => {
         message:   JSON.stringify({
           messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',
           'external_identifier': 'ext ID',
-          payload:               JSON.stringify({
+          payload:               {
             title:       'new deployment',
             endTime:     '4000-01-01 13:09:08',
             description: 'something new',
             supplierRef: 'ext ID',
             testing:     'the test results'
-          })
+          }
         })
       };
       before(() => {
@@ -124,8 +124,7 @@ describe('index.js', () => {
           message:  JSON.stringify({
             messageid:             'HO_SIAM_IN_REST_CHG_UPDATE_JSON',
             'internal_identifier': 'int ID',
-            'external_identifier': 'ext ID',
-            payload:               JSON.stringify({ success: true, comments: 'All good' })
+            payload:               { success: true, comments: 'All good' }
           })
         };
 
@@ -145,8 +144,7 @@ describe('index.js', () => {
           message:  JSON.stringify({
             messageid:             'HO_SIAM_IN_REST_CHG_UPDATE_JSON',
             'internal_identifier': 'int ID',
-            'external_identifier': 'ext ID',
-            payload:               JSON.stringify({ success: false, comments: 'Something bad happened' })
+            payload:               { success: false, comments: 'Something bad happened' }
           })
         };
 
@@ -192,13 +190,13 @@ describe('index.js', () => {
           message:  JSON.stringify({
             messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',
             'external_identifier': 'ext ID',
-            payload:               JSON.stringify({
+            payload:               {
               title:       'new deployment',
               endTime:     '4000-01-01 13:09:08',
               description: 'something new',
               supplierRef: 'ext ID',
               testing:     'the test results'
-            })
+            }
           })
         };
         before(() => {
@@ -222,13 +220,13 @@ describe('index.js', () => {
             message:   JSON.stringify({
               messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',
               'external_identifier': 'ext ID',
-              payload:               JSON.stringify({
+              payload:               {
                 title:       'new deployment',
                 endTime:     '2000-01-01 13:09:08',
                 description: 'something new',
                 supplierRef: 'ext ID',
                 testing:     'the test results'
-              })
+              }
             })
           };
           before(() => {
@@ -240,9 +238,7 @@ describe('index.js', () => {
               .to.eventually.be.rejectedWith(Error, 'Bad Request')
                 .which.includes({ status: 400 })
                 .and.has.nested.property('response.text', JSON.stringify({
-                  result: {
-                    'internal_identifier': ''
-                  }
+                  result: { 'internal_identifier': '' }
                 })));
           it('should exit with an error', () => expect(process.exit).to.have.been.calledOnce.and.calledWith(400));
         });
@@ -257,8 +253,7 @@ describe('index.js', () => {
             message:    JSON.stringify({
               messageid:             'HO_SIAM_IN_REST_CHG_UPDATE_JSON',
               'internal_identifier': '! a proper int ID',
-              'external_identifier': '! a proper ext ID',
-              payload:               JSON.stringify({ success: true, comments: 'All good' })
+              payload:               { success: true, comments: 'All good' }
             })
           };
           before(() => {
