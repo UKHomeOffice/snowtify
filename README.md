@@ -22,7 +22,7 @@ pipline:
   
   open-snow-change:
     image: quay.io/repository/ukhomeofficedigital/snowtify
-    secrets: [ snow_password ]
+    secrets: [ snow_pass ]
     description: "Look out! We're hitting the big red button..."
   
   deploy:
@@ -30,13 +30,13 @@ pipline:
   
   complete-snow-change:
     image: quay.io/repository/ukhomeofficedigital/snowtify
-    secrets: [ snow_password ]
+    secrets: [ snow_pass ]
     comments: "Yay, it worked!"
     deployment_outcome: success
   
   cancel-snow-change:
     image: quay.io/repository/ukhomeofficedigital/snowtify
-    secrets: [ snow_password ]
+    secrets: [ snow_pass ]
     comments: "Oooops, something went wrong!"
     deployment_outcome: fail
 ```
@@ -57,7 +57,8 @@ can also be used as a real example of how to notify ServiceNow as part of a depl
 "end-to-end" test jobs give an example of sending a change creation and completion notification.
 
 ### As a Docker container
-The utility can also be run as a standard docker container, as shown in the following example:
+The utility can also be run as a standard docker container, as shown in the following example which
+sends a notification of a new change:
 ```bash
 docker run quay.io/repository/ukhomeofficedigital/snowtify \
     -e SNOW_USER=username \
@@ -76,12 +77,13 @@ It is possible to switch between the "production" and "testing" ServiceNow insta
 completely custom instance endpoints. The authentication details can be explicitly specified, or a
 set can be provided, and the utility will guess which username and password best suit the
 notification (based on the
-[SNOW_DEPLOY_TO | PLUGIN_SEND_TO_PROD | DEPLOY_TO](#snow_deploy_to--plugin_send_to_prod--deploy_to)
-setting).
+[SNOW_DEPLOY_TO | DEPLOY_TO](#snow_deploy_to--deploy_to) or
+[PLUGIN_SEND_TO_PROD](#plugin_send_to_prod)
+settings).
 
 #### ServiceNow endpoints
 The endpoint (and thus the ServiceNow instance) can be set explicitly using the following option
-([SNOW_ENDPOINT | PLUGIN_ENDPOINT](#snow_deploy_to--plugin_endpoint)), otherwise the utility will
+([SNOW_ENDPOINT | PLUGIN_ENDPOINT](#snow_endpoint--plugin_endpoint)), otherwise the utility will
 choose the endpoint based on the other options in this section.
 
 ##### SNOW_ENDPOINT | PLUGIN_ENDPOINT
@@ -95,25 +97,37 @@ The protocol part of the URL for the ServiceNow API endpoint - the default is "h
 The host part of the URL for the production version of the ServiceNow API endpoint - the default is
 "lssiprod.service-now.com". Whether this host, or the Test host (described below) is used to construct
 the URL used for the ServiceNow API endpoint can be configured by the `DEPLOY_TO` settings. See
- - [SNOW_TEST_HOST | PLUGIN_TEST_HOST](#snow_test_host--plugin_test_host), and
- - [SNOW_DEPLOY_TO | PLUGIN_SEND_TO_PROD | DEPLOY_TO](#snow_deploy_to--plugin_send_to_prod--deploy_to).
+ - [SNOW_TEST_HOST | PLUGIN_TEST_HOST](#snow_test_host--plugin_test_host), 
+ - [SNOW_DEPLOY_TO | DEPLOY_TO](#snow_deploy_to--deploy_to), and
+ - [PLUGIN_SEND_TO_PROD](#plugin_send_to_prod).
 
 ##### SNOW_TEST_HOST | PLUGIN_TEST_HOST
 The host part of the URL for the sandbox version of the ServiceNow API endpoint - the default is
 "lssitest.service-now.com". Whether this host, or the Production host (described above) is used to
 construct the URL used for the ServiceNow API endpoint can be configured by the `DEPLOY_TO` settings.
 See
- - [SNOW_PROD_HOST | PLUGIN_PROD_HOST](#snow_prod_host--plugin_prod_host), and
- - [SNOW_DEPLOY_TO | PLUGIN_SEND_TO_PROD | DEPLOY_TO](#snow_deploy_to--plugin_send_to_prod--deploy_to).
+ - [SNOW_PROD_HOST | PLUGIN_PROD_HOST](#snow_prod_host--plugin_prod_host),
+ - [SNOW_DEPLOY_TO | DEPLOY_TO](#snow_deploy_to--deploy_to), and
+ - [PLUGIN_SEND_TO_PROD](#plugin_send_to_prod).
 
 ##### SNOW_PATH | PLUGIN_PATH
 The path part of the URL for the ServiceNow API endpoint - the default is
 "api/fho/siam_in/create_transaction".
 
-##### SNOW_DEPLOY_TO | PLUGIN_SEND_TO_PROD | DEPLOY_TO
+##### SNOW_DEPLOY_TO | DEPLOY_TO
 If set to "prod" (case insensitive), specifies the notification is to be sent to the production
-URL - the default is to send notifications to the test URL. See 
- - [SNOW_PROD_HOST | PLUGIN_PROD_HOST](#snow_prod_host--plugin_prod_host),
+URL - the default is to send notifications to the test URL. This setting can be overridden by the
+drone plugin setting `DEPLOY_TO_PROD`. See 
+ - [PLUGIN_SEND_TO_PROD](#plugin_send_to_prod),
+ - [SNOW_PROD_HOST | PLUGIN_PROD_HOST](#snow_prod_host--plugin_prod_host), and
+ - [SNOW_TEST_HOST | PLUGIN_TEST_HOST](#snow_test_host--plugin_test_host).
+
+##### PLUGIN_SEND_TO_PROD
+If set to "true" (case insensitive), specifies the notification is to be sent to the production
+URL - the default is to send notifications to the test URL. If set to "true", it will override
+the `SNOW_DEPLOY_TO` and `DEPLOY_TO` settings. See 
+ - [SNOW_DEPLOY_TO | DEPLOY_TO](#snow_deploy_to--deploy_to),
+ - [SNOW_PROD_HOST | PLUGIN_PROD_HOST](#snow_prod_host--plugin_prod_host), and
  - [SNOW_TEST_HOST | PLUGIN_TEST_HOST](#snow_test_host--plugin_test_host).
 
 #### Authentication options
@@ -165,21 +179,21 @@ title if either are not explicitly provided. See
 
 #### SNOW_EXTERNAL_ID | PLUGIN_EXTERNAL_ID
 A project/build ID for the current CD pipeline. If not provided a default is constructed using the
-template `${username}-${REPO_NAME}-${BUILD_NUMBER}`. See
- - [Authentication options](#authentication-options),
+template `${snow_username}-${REPO_NAME}-${BUILD_NUMBER}`. See
+ - [Authentication options](#authentication-options) for the "snow_username",
  - [REPO_NAME | DRONE_REPO_NAME](#repo_name--drone_repo_name), and
  - [BUILD_NUMBER | DRONE_BUILD_NUMBER](#build_number--drone_build_number).
 
 #### SNOW_INT_ID_FILE | PLUGIN_INTERNAL_ID_FILE
 Path to a file for storing the internal ID (when opening a new change), or retrieving the ID of the
 target change (when updating its status). If this is not provided when opening a new change, be sure
-to take note of the ID when it is printed, after the new change is successfully created. See
+to take note of the ID when it is printed, after the new change is successfully created. See also
 [SNOW_INTERNAL_ID | PLUGIN_INTERNAL_ID](#snow_internal_id--plugin_internal_id).
 
 #### SNOW_INTERNAL_ID | PLUGIN_INTERNAL_ID
 Used to identify a previously opened change when updating the status and closing. Setting this will
 override the equivalent file-based option. See
-[SNOW_INT_ID_FILE | PLUGIN_INTERNAL_ID_FILE](#snow_int_file--plugin_internal_id_file)
+[SNOW_INT_ID_FILE | PLUGIN_INTERNAL_ID_FILE](#snow_int_id_file--plugin_internal_id_file).
 
 #### SNOW_NOTIFICATION_TYPE | PLUGIN_NOTIFICATION_TYPE
 Indicates whether opening a new change (if set to "deployment"), or closing an existing one (if set
