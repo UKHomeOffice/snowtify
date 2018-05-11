@@ -162,6 +162,120 @@ describe('Logger', function () {
             .and.not.contain(` DEBUG: ${logs.debug}`));
       });
     });
+
+    describe('configuring the file log level to', () => {
+      describe('display errors only with an environment variable', function () {
+        before(() => {
+          this.result = shell.exec(`SNOW_LOG_FILE=${logFile} SNOW_LOG_FILE_LEVEL=ERROR ./log-tester.js`);
+          expect(this.result).to.include.property('code', 0);
+        });
+
+        describe('the console logger', () => {
+          it('should log errors to stderr', () =>
+            expect(this.result)
+              .to.have.property('stderr')
+              .that.contains(` ERROR: ${logs.error}`)
+              .and.does.not.contain(` DEBUG: ${logs.debug}`));
+          it('should log warnings and info messages to stdout', () =>
+            expect(this.result)
+              .to.have.property('stdout')
+              .that.contains(` WARN: ${logs.warn}`)
+              .and.contains(` INFO: ${logs.info}`)
+              .and.does.not.contain(` VERBOSE: ${logs.verbose}`));
+        });
+
+        describe('the file logger', () => {
+          before('get log contents', () => {
+            const result = shell.cat(logFile);
+            expect(result.code).to.equal(0);
+            this.contents = result.stdout;
+          });
+
+          it('should log only errors to the specified output file (and overwrite any previous content)', () =>
+            expect(this.contents)
+              .to.contain(` ERROR: ${logs.error}`)
+              .and.not.contain(` WARN: ${logs.warn}`)
+              .and.not.contain(` INFO: ${logs.info}`)
+              .and.not.contain(` VERBOSE: ${logs.verbose}`)
+              .and.not.contain(` DEBUG: ${logs.debug}`));
+        });
+      });
+
+      describe('display warnings with drone plugin settings', function () {
+        before(() => {
+          this.result = shell.exec(`PLUGIN_LOG_FILE=${logFile} PLUGIN_LOG_FILE_LEVEL=waRN ./log-tester.js`);
+          expect(this.result).to.include.property('code', 0);
+        });
+
+        describe('the console logger', () => {
+          it('should log errors to stderr', () =>
+            expect(this.result)
+              .to.have.property('stderr')
+              .that.contains(` ERROR: ${logs.error}`)
+              .and.does.not.contain(` DEBUG: ${logs.debug}`));
+          it('should log warnings and info messages to stdout', () =>
+            expect(this.result)
+              .to.have.property('stdout')
+              .that.contains(` WARN: ${logs.warn}`)
+              .and.contains(` INFO: ${logs.info}`)
+              .and.does.not.contain(` VERBOSE: ${logs.verbose}`));
+        });
+
+        describe('the file logger', () => {
+          before('get log contents', () => {
+            const result = shell.cat(logFile);
+            expect(result.code).to.equal(0);
+            this.contents = result.stdout;
+          });
+
+          it('should log only errors to the specified output file (and overwrite any previous content)', () =>
+            expect(this.contents)
+              .to.contain(` ERROR: ${logs.error}`)
+              .and.contain(` WARN: ${logs.warn}`)
+              .and.not.contain(` INFO: ${logs.info}`)
+              .and.not.contain(` VERBOSE: ${logs.verbose}`)
+              .and.not.contain(` DEBUG: ${logs.debug}`));
+        });
+      });
+
+      describe('DEBUG with the command line argument overriding the equivalent environment variable', function () {
+        before(() => {
+          this.result = shell.exec(
+            `SNOW_LOG_FILE=${logFile} SNOW_LOG_FILE_LEVEL=ERROR ./log-tester.js --log-file-level debug`);
+          expect(this.result).to.include.property('code', 0);
+        });
+
+        describe('the console logger', () => {
+          it('should log errors to stderr', () =>
+            expect(this.result)
+              .to.have.property('stderr')
+              .that.contains(` ERROR: ${logs.error}`)
+              .and.does.not.contain(` DEBUG: ${logs.debug}`));
+          it('should log warnings and info messages to stdout', () =>
+            expect(this.result)
+              .to.have.property('stdout')
+              .that.contains(` WARN: ${logs.warn}`)
+              .and.contains(` INFO: ${logs.info}`)
+              .and.does.not.contain(` VERBOSE: ${logs.verbose}`));
+        });
+
+        describe('the file logger', () => {
+          before('get log contents', () => {
+            const result = shell.cat(logFile);
+            expect(result.code).to.equal(0);
+            this.contents = result.stdout;
+          });
+
+          it('should log only errors to the specified output file (and overwrite any previous content)', () =>
+            expect(this.contents)
+              .to.contain(` ERROR: ${logs.error}`)
+              .and.contain(` WARN: ${logs.warn}`)
+              .and.contain(` INFO: ${logs.info}`)
+              .and.contain(` VERBOSE: ${logs.verbose}`)
+              .and.contain(` DEBUG: ${logs.debug}`));
+        });
+      });
+    });
   });
 
   after('restore pwd', () => {

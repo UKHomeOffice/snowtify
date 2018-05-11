@@ -12,7 +12,10 @@ const inputOptions = yargs
       default: 'info',
       coerce:  level => level.toLowerCase()
     },
-    'log-file': { }
+    'log-file': { },
+    'log-file-level': {
+      coerce:  level => level && level.toLowerCase()
+    }
   });
 const defaults = inputOptions.env('SNOW').argv;
 const options  = inputOptions.default(defaults).env('PLUGIN').argv;
@@ -26,7 +29,8 @@ const logger = winston.createLogger({
 if (options['log-file']) {
   logger.add(new winston.transports.File({
     filename: options['log-file'],
-    options:  { flags: 'w' }
+    options:  { flags: 'w' },
+    level:    options['log-file-level'] || options['log-level']
   }));
 }
 
