@@ -21,17 +21,20 @@ const defaults = inputOptions.env('SNOW').argv;
 const options  = inputOptions.default(defaults).env('PLUGIN').argv;
 
 const logger = winston.createLogger({
-  level:      options['log-level'],
+  level:      options.logLevel,
   format:     combine(timestamp(), format),
   transports: [ new winston.transports.Console() ]
 });
+logger.verbose('Logging at level: ' + options.logLevel);
 
-if (options['log-file']) {
+if (options.logFile) {
+  const fileLevel = options.logFileLevel || options.logLevel;
   logger.add(new winston.transports.File({
-    filename: options['log-file'],
+    filename: options.logFile,
     options:  { flags: 'w' },
-    level:    options['log-file-level'] || options['log-level']
+    level:    fileLevel
   }));
+  logger.verbose(`Logging to file "${options.logFile}" at level: ${fileLevel}`);
 }
 
 module.exports = logger;

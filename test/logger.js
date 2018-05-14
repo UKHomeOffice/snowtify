@@ -81,7 +81,8 @@ describe('Logger', function () {
         it('should log warnings, info and verbose messages to stdout', () =>
           expect(this.result)
             .to.have.property('stdout')
-            .that.contains(` WARN: ${logs.warn}`)
+            .that.contains(' VERBOSE: Logging at level: debug')
+            .and.contains(` WARN: ${logs.warn}`)
             .and.contains(` INFO: ${logs.info}`)
             .and.contains(` VERBOSE: ${logs.verbose}`));
       });
@@ -266,9 +267,10 @@ describe('Logger', function () {
             this.contents = result.stdout;
           });
 
-          it('should log only errors to the specified output file (and overwrite any previous content)', () =>
+          it('should log all messages to the specified output file (and overwrite any previous content)', () =>
             expect(this.contents)
-              .to.contain(` ERROR: ${logs.error}`)
+              .to.contain(` VERBOSE: Logging to file "${logFile}" at level: debug`)
+              .and.contain(` ERROR: ${logs.error}`)
               .and.contain(` WARN: ${logs.warn}`)
               .and.contain(` INFO: ${logs.info}`)
               .and.contain(` VERBOSE: ${logs.verbose}`)
