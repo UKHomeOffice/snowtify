@@ -4,6 +4,7 @@
 
 const fs      = require('fs');
 const config  = require('./config');
+const logger  = require('./logger');
 const request = require('superagent');
 const redact  = (key, value) => /password/i.test(key) && value ? value.split('').map(() => '*').join('') : value;
 const error   = (err, status, res) => {
@@ -14,10 +15,13 @@ const error   = (err, status, res) => {
 
 // handle response from ServiceNow API
 const report = res => {
+  logger.debug('handle response from ServiceNow');
   if (res.status === 201) {
     let result;
     try {
+      logger.debug('parsing response from ServiceNow');
       result = JSON.parse(res.text).result;
+      logger.debug('successfully parsed response from ServiceNow');
     } catch (e) {
       throw error(e, 500, res);
     }
@@ -26,13 +30,14 @@ const report = res => {
       // check if new change was created (given an internal_identifier)
       if (result.internal_identifier) {
         if (config.intIDFile) {
+          logger.debug(`writing change ID "${result.internal_identifier}" to file: ${config.intIDFile}`);
           fs.writeFileSync(config.intIDFile, result.internal_identifier);
         }
-        console.log(`Notification successfully sent - new change ID: "${result.internal_identifier}"`);
+        logger.info(`Notification successfully sent - new change ID: "${result.internal_identifier}"`);
         return res;
       }
     } else if (result.transaction_status === 'PROCESSED') {
-      console.log('Notification successfully sent - change', config.success ? 'completed' : 'cancelled');
+      logger.info(`Notification successfully sent - change ${config.success ? 'completed' : 'cancelled'}`);
       return res;
     }
 
@@ -43,6 +48,7 @@ const report = res => {
 };
 
 // ServiceNow request
+logger.debug('sending details to ServiceNow');
 module.exports = request
   .post(config.endpoint)
   .auth(config.username, config.password)
@@ -51,10 +57,10 @@ module.exports = request
   .send(config.message)
   .then(report)
   .catch(err => {
-    console.info('Config parameters:', JSON.stringify(config, redact, 2));
-    console.error('Notification failed, response:', err.status, err.message);
+    logger.info('Config parameters: ' + JSON.stringify(config, redact, 2));
+    logger.error(`Notification failed, response: ${err.status} ${err.message}`);
     if (err.response) {
-      console.info(err.response.json || err.response.text);
+      logger.info(err.response.json || err.response.text);
     }
     process.exit(err.status || 2); // eslint-disable-line no-process-exit
     throw err;

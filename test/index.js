@@ -23,6 +23,14 @@ describe('index.js', () => {
   const plugin = proxyquire('..', { superagent: req, './config': conf });
   const redact = plugin.redact;
   const report = plugin.report;
+  const logger = {
+    log:     sinon.stub(),
+    error:   sinon.stub(),
+    warn:    sinon.stub(),
+    info:    sinon.stub(),
+    verbose: sinon.stub(),
+    debug:   sinon.stub()
+  };
 
   before(() => {
     sinon.stub(process, 'exit');
@@ -47,7 +55,6 @@ describe('index.js', () => {
         multiRequest: ',',
         quiet:        true
       });
-      sinon.spy(console, 'log');
     });
 
     describe('send new deployment notification', () => {
@@ -73,7 +80,7 @@ describe('index.js', () => {
       });
 
       it('should receive a 201 response', () =>
-        expect(proxyquire('..', { './config': config, fs: fs })).to.eventually.include({
+        expect(proxyquire('..', { './config': config, fs: fs, './logger': logger })).to.eventually.include({
           status: 201,
           text: JSON.stringify({
             result: {
@@ -84,7 +91,7 @@ describe('index.js', () => {
       it('should not have recorded the "internal_identifier" for this new change', () =>
         expect(fs.writeFileSync).not.to.have.been.called);
       it('should have reported the "internal_identifier" generated', () =>
-        expect(console.log).to.have.been.calledWith(`Notification successfully sent - new change ID: "${newID}"`));
+        expect(logger.info).to.have.been.calledWith(`Notification successfully sent - new change ID: "${newID}"`));
 
       describe('check the generated internal ID is saved', () => {
         const withFile     = Object.assign({ }, config);
@@ -94,7 +101,7 @@ describe('index.js', () => {
         });
 
         it('should receive a 201 response', () =>
-          expect(proxyquire('..', { './config': withFile, fs: fs })).to.eventually.include({
+          expect(proxyquire('..', { './config': withFile, fs: fs, './logger': logger })).to.eventually.include({
             status: 201,
             text: JSON.stringify({
               result: {
@@ -105,7 +112,7 @@ describe('index.js', () => {
         it('should have recorded the "internal_identifier" for this new change', () =>
           expect(fs.writeFileSync).to.have.been.calledOnce.and.calledWith(withFile.intIDFile, newID));
         it('should have reported the "internal_identifier" generated', () =>
-          expect(console.log).to.have.been.calledWith(`Notification successfully sent - new change ID: "${newID}"`));
+          expect(logger.info).to.have.been.calledWith(`Notification successfully sent - new change ID: "${newID}"`));
       });
 
       after(() => {
@@ -129,9 +136,10 @@ describe('index.js', () => {
         };
 
         it('should receive a 201 response', () =>
-          expect(proxyquire('..', { './config': config })).to.eventually.have.property('status', 201));
+          expect(proxyquire('..', { './config': config, './logger': logger }))
+            .to.eventually.have.property('status', 201));
         it('should have reported the status', () =>
-          expect(console.log).to.have.been.calledWith('Notification successfully sent - change', 'completed'));
+          expect(logger.info).to.have.been.calledWith('Notification successfully sent - change completed'));
       });
 
       describe('for an unsuccessful deployment', function () {
@@ -149,13 +157,10 @@ describe('index.js', () => {
         };
 
         it('should receive a 201 response', () =>
-          expect(proxyquire('..', { './config': config })).to.eventually.have.property('status', 201));
+          expect(proxyquire('..', { './config': config, './logger': logger }))
+            .to.eventually.have.property('status', 201));
         it('should have reported the status', () =>
-          expect(console.log).to.have.been.calledWith('Notification successfully sent - change', 'cancelled'));
-      });
-
-      after(() => {
-        console.log.restore();
+          expect(logger.info).to.have.been.calledWith('Notification successfully sent - change cancelled'));
       });
     });
 

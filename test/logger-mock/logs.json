@@ -1,0 +1,7 @@
+{
+  "error": "log an error",
+  "warn": "log a warning",
+  "info": "log an info message",
+  "verbose": "log some verbose noise",
+  "debug": "log some debug stuff"
+}

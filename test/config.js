@@ -1,11 +1,11 @@
 'use strict';
 
-const fs         = require('fs');
-const mfs        = require('mock-fs');
-const moment     = require('moment');
-const config     = rewire('../config');
-const prop       = (obj, property) => obj.__get__(property); // eslint-disable-line no-underscore-dangle
-const snowP      = prop(config, 'snowPath');
+const fs     = require('fs');
+const mfs    = require('mock-fs');
+const moment = require('moment');
+const config = rewire('../config');
+const prop   = (obj, property) => obj.__get__(property); // eslint-disable-line no-underscore-dangle
+const snowP  = prop(config, 'snowPath');
 
 // fake modules
 const fmoment = function () {

@@ -1,4 +1,4 @@
-FROM quay.io/ukhomeofficedigital/nodejs-base:v6 AS base
+FROM quay.io/ukhomeofficedigital/nodejs-base:v8 AS base
 
 RUN yum clean -q all && \
     yum update -y -q && \
@@ -9,7 +9,7 @@ COPY ./package.json /app/
 ENV NODE_ENV production
 RUN npm install --only production > .npm-install.log 2>&1 && rm .npm-install.log || ( EC=$?; cat .npm-install.log; exit $EC )
 
-COPY index.js config.js entrypoint.sh /app/
+COPY index.js config.js logger.js entrypoint.sh /app/
 
 ENTRYPOINT ["/app/entrypoint.sh"]
 

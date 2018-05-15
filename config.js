@@ -3,6 +3,7 @@
 const fs     = require('fs');
 const moment = require('moment');
 const format = 'YYYY-MM-DD HH:mm:ss';
+const logger = require('./logger');
 
 const loadFromFile = file => { // eslint-disable-line consistent-return
   if (file) {
@@ -15,7 +16,9 @@ const loadFromFile = file => { // eslint-disable-line consistent-return
   }
 };
 
+logger.debug('Process environment variables');
 const pe                = global.injected && global.injected.env || process.env;
+logger.debug('env vars: ' + JSON.stringify(pe));
 const repo              = pe.REPO_NAME || pe.DRONE_REPO_NAME;
 const buildNumber       = pe.BUILD_NUMBER || pe.DRONE_BUILD_NUMBER;
 const protocol          = pe.PLUGIN_PROTOCOL || pe.SNOW_PROTOCOL || 'https';
@@ -70,7 +73,7 @@ if (testing) {
   messageTemplates.openChange.payload.testing = testing;
 }
 
-module.exports = {
+const config = {
   newChange: newChange,
   endpoint:  endpoint || `${protocol}://${sendToProd ? snowProdInstance : snowTestInstance}/${snowPath}`,
   username:  username,
@@ -79,3 +82,5 @@ module.exports = {
   intIDFile: intIDFile,
   success:   deploymentOutcome
 };
+logger.verbose('config parameters: ' + JSON.stringify(config));
+module.exports = config;
