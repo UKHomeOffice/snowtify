@@ -1,4 +1,4 @@
-FROM quay.io/ukhomeofficedigital/nodejs-base:v6 AS base
+FROM quay.io/ukhomeofficedigital/nodejs-base:v8 AS base
 
 RUN yum clean -q all && \
     yum update -y -q && \
