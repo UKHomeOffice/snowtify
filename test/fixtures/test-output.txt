@@ -1,0 +1,26 @@
+
+* E2E test logs for promotion to uat *
+
+
+> lev-web@0.1.0 test:browser /app
+> npm run $([ -n "${SMOKE_TEST}" ] && echo smoke || echo chimp)
+
+
+> lev-web@0.1.0 smoke /app
+> chimp --mocha --browser=phantomjs --path=./test/smoke/
+
+[32m
+Master Chimp and become a testing Ninja! Check out our course: [39m[4m[34mhttp://bit.ly/2btQaFu
+[39m[24m
+[33m
+[chimp] Running...[39m
+
+[0m[0m
+[0m  Smoke Tests[0m
+[0m    Trying to see a non-existent record[0m
+    [32m  ✓[0m[90m presents me with the login prompt[0m
+    [32m  ✓[0m[90m allows me to login to LEV[0m
+    [32m  ✓[0m[90m presents me with the NOT FOUND error page[0m
+
+
+[92m [0m[32m 3 passing[0m[90m (2s)[0m
