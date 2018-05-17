@@ -15,6 +15,7 @@ const loadFromFile = file => { // eslint-disable-line consistent-return
     }
   }
 };
+const stripControl = text => text && text.replace(/\x1b\[\d+m/g, '').replace(/[\0-\x08\x11-\x1f]/g, '');
 
 logger.debug('Process environment variables');
 const pe                = global.injected && global.injected.env || process.env;
@@ -55,7 +56,7 @@ const messageTemplates  = {
     payload:               {
       title:       title,
       endTime:     endTime,
-      description: description,
+      description: stripControl(description),
       supplierRef: externalID,
     }
   },
@@ -64,13 +65,13 @@ const messageTemplates  = {
     'internal_identifier': internalID,
     payload:               {
       success:  deploymentOutcome ? 'true' : 'false',
-      comments: comments
+      comments: stripControl(comments)
     }
   }
 };
 
 if (testing) {
-  messageTemplates.openChange.payload.testing = testing;
+  messageTemplates.openChange.payload.testing = stripControl(testing);
 }
 
 const config = {

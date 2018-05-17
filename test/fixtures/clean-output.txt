@@ -1,0 +1,26 @@
+
+* E2E test logs for promotion to uat *
+
+
+> lev-web@0.1.0 test:browser /app
+> npm run $([ -n "${SMOKE_TEST}" ] && echo smoke || echo chimp)
+
+
+> lev-web@0.1.0 smoke /app
+> chimp --mocha --browser=phantomjs --path=./test/smoke/
+
+
+Master Chimp and become a testing Ninja! Check out our course: http://bit.ly/2btQaFu
+
+
+[chimp] Running...
+
+
+  Smoke Tests
+    Trying to see a non-existent record
+      ✓ presents me with the login prompt
+      ✓ allows me to login to LEV
+      ✓ presents me with the NOT FOUND error page
+
+
+  3 passing (2s)

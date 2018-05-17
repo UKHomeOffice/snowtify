@@ -36,9 +36,9 @@ describe('Config module', () => {
         files[dir][content]   = contents;
         files[dir][noContent] = '';
         mfs(files);
+        this.loadFromFile = prop(config, 'loadFromFile');
       });
       beforeEach(() => {
-        this.loadFromFile = prop(config, 'loadFromFile');
         this.readFileSync = sinon.spy(prop(config, 'fs'), 'readFileSync');
       });
 
@@ -67,6 +67,21 @@ describe('Config module', () => {
       after(() => {
         mfs.restore();
       });
+    });
+
+    describe('#stripControl', function () {
+      before('get fixture text', () => {
+        const load = prop(config, 'loadFromFile');
+        this.text = load('./test/fixtures/test-output.txt');
+        this.clean = load('./test/fixtures/clean-output.txt');
+        this.stripControl = prop(config, 'stripControl');
+      });
+      it('should remove the unwated (control) characters from the text input', () =>
+        expect(this.stripControl(this.text))
+          .be.a('string')
+          .and.have.lengthOf.below(this.text.length)
+          .and.to.match(/^[^\0-\x08\x11-\x1f]+$/g)
+          .and.to.equal(this.clean));
     });
   });
 
