@@ -175,7 +175,7 @@ describe('index.js', () => {
           process.exit.resetHistory();
         });
 
-        it('should receive a 401 Unauthorised response when wrong details are sent', () =>
+        it('should report a 401 Unauthorised response when wrong details are sent', () =>
           expect(proxyquire('..', { './config': config }))
             .to.eventually.be.rejectedWith(Error, 'Unauthorized')
             .with.property('response').which.includes({
@@ -183,6 +183,27 @@ describe('index.js', () => {
               text: 'unauthorised'
             }));
         it('should exit with an error', () => expect(process.exit).to.have.been.calledOnce.and.calledWith(401));
+      });
+
+      describe('when an error occurs the script still exits cleanly if FAIL_ON_ERROR is set to FALSE', () => {
+        const config = {
+          endpoint:    `http://localhost:${mockPort}/${snowPath}`,
+          message:     JSON.stringify({ payload: 'unauthorised notification' }),
+          failOnError: false
+        };
+
+        before(() => {
+          process.exit.resetHistory();
+        });
+
+        it('should report a 401 Unauthorised response as normal', () =>
+          expect(proxyquire('..', { './config': config }))
+            .to.eventually.be.rejectedWith(Error, 'Unauthorized')
+            .with.property('response').which.includes({
+              status: 401,
+              text: 'unauthorised'
+            }));
+        it('should NOT exit with an error', () => expect(process.exit).to.have.been.calledOnce.and.calledWith(0));
       });
 
       describe('when the target internal_identifier file cannot be written to', () => {
