@@ -6,7 +6,7 @@ matrix:
   MINOR:
     - 0
   PATCH:
-    - 5
+    - 6
   DOCKER_USERNAME:
     - ukhomeofficedigital+snowtify
   DOCKER_REPO:
