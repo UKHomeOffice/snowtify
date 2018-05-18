@@ -102,7 +102,8 @@ describe('Config module', () => {
             PLUGIN_TITLE:             'title',
             PLUGIN_END_TIME:          '2000-01-01 12:30:00',
             PLUGIN_DESCRIPTION:       'desc',
-            PLUGIN_TESTING:           'tests'
+            PLUGIN_TESTING:           'tests',
+            PLUGIN_FAIL_ON_ERROR:     'false'
           };
           this.env                           = env;
           global.injected                    = { env: env };
@@ -132,6 +133,7 @@ describe('Config module', () => {
             supplierRef: this.env.PLUGIN_EXTERNAL_ID,
             testing: this.env.PLUGIN_TESTING
           }));
+        it('should have fail on error disabled', () => expect(this.config).to.have.property('failOnError', false));
       });
 
       describe('a successful deployment notification returns an object which', function () {
@@ -147,7 +149,8 @@ describe('Config module', () => {
             PLUGIN_EXTERNAL_ID:        'ext-id',
             PLUGIN_NOTIFICATION_TYPE:  'status update',
             PLUGIN_DEPLOYMENT_OUTCOME: 'success',
-            PLUGIN_COMMENTS:           'it went well'
+            PLUGIN_COMMENTS:           'it went well',
+            PLUGIN_FAIL_ON_ERROR:      'yes'
           };
           this.env        = env;
           global.injected = { env: env };
@@ -167,6 +170,7 @@ describe('Config module', () => {
           .to.have.property('internal_identifier', this.env.PLUGIN_INTERNAL_ID));
         it('should have a message in the payload', () => expect(this.config.message).to.have.property('payload')
           .that.is.an('object').which.deep.equals({ success: 'true', comments: this.env.PLUGIN_COMMENTS }));
+        it('should have fail on error enabled', () => expect(this.config).to.have.property('failOnError', true));
       });
 
       describe('a failed deployment notification returns an object which', function () {
