@@ -49,6 +49,7 @@ const commentsFile      = !newDeployment && loadFromFile(pe.PLUGIN_COMMENTS_FILE
 const comments          = pe.PLUGIN_COMMENTS || pe.SNOW_COMMENTS || commentsFile;
 const deploymentOutcome = /^success$/i.test(pe.PLUGIN_DEPLOYMENT_OUTCOME || pe.SNOW_STATUS || pe.DRONE_BUILD_STATUS);
 const newChange         = newDeployment || !(statusUpdate || comments);
+const failOnError       = !/^false$/i.test(pe.PLUGIN_FAIL_ON_ERROR || pe.SNOW_FAIL_ON_ERROR);
 const messageTemplates  = {
   openChange: {
     messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',
@@ -75,13 +76,14 @@ if (testing) {
 }
 
 const config = {
-  newChange: newChange,
-  endpoint:  endpoint || `${protocol}://${sendToProd ? snowProdInstance : snowTestInstance}/${snowPath}`,
-  username:  username,
-  password:  password,
-  message:   newChange ? messageTemplates.openChange : messageTemplates.update,
-  intIDFile: intIDFile,
-  success:   deploymentOutcome
+  newChange:   newChange,
+  endpoint:    endpoint || `${protocol}://${sendToProd ? snowProdInstance : snowTestInstance}/${snowPath}`,
+  username:    username,
+  password:    password,
+  message:     newChange ? messageTemplates.openChange : messageTemplates.update,
+  intIDFile:   intIDFile,
+  success:     deploymentOutcome,
+  failOnError: failOnError
 };
 logger.verbose('config parameters: ' + JSON.stringify(config));
 module.exports = config;

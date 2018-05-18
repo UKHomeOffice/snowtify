@@ -4,9 +4,9 @@ matrix:
   MAJOR:
     - 0
   MINOR:
-    - 0
+    - 1
   PATCH:
-    - 5
+    - 0
   DOCKER_USERNAME:
     - ukhomeofficedigital+snowtify
   DOCKER_REPO:
