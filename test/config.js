@@ -222,7 +222,7 @@ describe('Config module', () => {
           const env = {
             DRONE_REPO_NAME:    'my-repo',
             DRONE_BUILD_NUMBER: 42,
-            DEPLOY_TO:          'prod',
+            DRONE_DEPLOY_TO:    'prod',
             SNOW_USER:          'user',
             SNOW_TEST_USER:     'test-user',
             SNOW_PROD_USER:     'prod-user',
