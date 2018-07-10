@@ -250,6 +250,11 @@ deployment succeeded, otherwise the change will be marked as a failure. If the u
 a drone plugin (as in the [example](#as-a-drone-plugin) above), this option can be omitted and the
 value will instead be picked up from the drone environment variable `DRONE_BUILD_STATUS`.
 
+## Contributing
+Please feel free to add to `snowtify` and raise PRs with your changes.
+Please make sure you provide appropriate tests for changes.
+Snowtify follows the **[sem-ver](https://semver.org/)** versioning scheme.
+
 ## Useful links
  - [Quay.io](https://quay.io/repository/ukhomeofficedigital/snowtify)
 
