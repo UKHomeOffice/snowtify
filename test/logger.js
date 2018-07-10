@@ -20,14 +20,14 @@ describe('Logger', function () {
       it('should log errors to stderr', () =>
         expect(this.result)
           .to.have.property('stderr')
-          .that.contains(` ERROR: ${logs.error}`)
-          .and.does.not.contain(` DEBUG: ${logs.debug}`));
+          .that.contains(` ERROR: ${logs.error}`));
       it('should log warnings and info messages to stdout', () =>
         expect(this.result)
           .to.have.property('stdout')
           .that.contains(` WARN: ${logs.warn}`)
           .and.contains(` INFO: ${logs.info}`)
-          .and.does.not.contain(` VERBOSE: ${logs.verbose}`));
+          .and.does.not.contain(` VERBOSE: ${logs.verbose}`)
+          .and.does.not.contain(` DEBUG: ${logs.debug}`));
     });
 
     describe('configuring the log level to', () => {
@@ -57,14 +57,14 @@ describe('Logger', function () {
         it('should log only errors to stderr', () =>
           expect(this.result)
             .to.have.property('stderr')
-            .that.contains(` ERROR: ${logs.error}`)
-            .and.does.not.contain(` DEBUG: ${logs.debug}`));
+            .that.contains(` ERROR: ${logs.error}`));
         it('should log only warnings to stdout', () =>
           expect(this.result)
             .to.have.property('stdout')
             .that.contains(` WARN: ${logs.warn}`)
             .and.does.not.contain(` INFO: ${logs.info}`)
-            .and.does.not.contain(` VERBOSE: ${logs.verbose}`));
+            .and.does.not.contain(` VERBOSE: ${logs.verbose}`)
+            .and.does.not.contain(` DEBUG: ${logs.debug}`));
       });
 
       describe('DEBUG with the command line argument overriding the equivalent environment variable', function () {
@@ -73,18 +73,18 @@ describe('Logger', function () {
           expect(this.result).to.include.property('code', 0);
         });
 
-        it('should log errors and debug messages to stderr', () =>
+        it('should only log errors messages to stderr', () =>
           expect(this.result)
             .to.have.property('stderr')
-            .that.contains(` ERROR: ${logs.error}`)
-            .and.contains(` DEBUG: ${logs.debug}`));
-        it('should log warnings, info and verbose messages to stdout', () =>
+            .that.contains(` ERROR: ${logs.error}`));
+        it('should log warnings, info, verbose and debug messages to stdout', () =>
           expect(this.result)
             .to.have.property('stdout')
             .that.contains(' VERBOSE: Logging at level: debug')
             .and.contains(` WARN: ${logs.warn}`)
             .and.contains(` INFO: ${logs.info}`)
-            .and.contains(` VERBOSE: ${logs.verbose}`));
+            .and.contains(` VERBOSE: ${logs.verbose}`)
+            .and.contains(` DEBUG: ${logs.debug}`));
       });
     });
   });
@@ -102,14 +102,14 @@ describe('Logger', function () {
         it('should log errors to stderr', () =>
           expect(this.result)
             .to.have.property('stderr')
-            .that.contains(` ERROR: ${logs.error}`)
-            .and.does.not.contain(` DEBUG: ${logs.debug}`));
+            .that.contains(` ERROR: ${logs.error}`));
         it('should log warnings and info messages to stdout', () =>
           expect(this.result)
             .to.have.property('stdout')
             .that.contains(` WARN: ${logs.warn}`)
             .and.contains(` INFO: ${logs.info}`)
-            .and.does.not.contain(` VERBOSE: ${logs.verbose}`));
+            .and.does.not.contain(` VERBOSE: ${logs.verbose}`)
+            .and.does.not.contain(` DEBUG: ${logs.debug}`));
       });
 
       describe('the file logger', () => {
@@ -139,8 +139,7 @@ describe('Logger', function () {
         it('should log only errors to stderr', () =>
           expect(this.result)
             .to.have.property('stderr')
-            .that.contains(` ERROR: ${logs.error}`)
-            .and.does.not.contain(` DEBUG: ${logs.debug}`));
+            .that.contains(` ERROR: ${logs.error}`));
         it('should not log any messages to stdout', () =>
           expect(this.result)
             .to.have.property('stdout')
@@ -175,14 +174,14 @@ describe('Logger', function () {
           it('should log errors to stderr', () =>
             expect(this.result)
               .to.have.property('stderr')
-              .that.contains(` ERROR: ${logs.error}`)
-              .and.does.not.contain(` DEBUG: ${logs.debug}`));
+              .that.contains(` ERROR: ${logs.error}`));
           it('should log warnings and info messages to stdout', () =>
             expect(this.result)
               .to.have.property('stdout')
               .that.contains(` WARN: ${logs.warn}`)
               .and.contains(` INFO: ${logs.info}`)
-              .and.does.not.contain(` VERBOSE: ${logs.verbose}`));
+              .and.does.not.contain(` VERBOSE: ${logs.verbose}`)
+              .and.does.not.contain(` DEBUG: ${logs.debug}`));
         });
 
         describe('the file logger', () => {
@@ -212,14 +211,14 @@ describe('Logger', function () {
           it('should log errors to stderr', () =>
             expect(this.result)
               .to.have.property('stderr')
-              .that.contains(` ERROR: ${logs.error}`)
-              .and.does.not.contain(` DEBUG: ${logs.debug}`));
+              .that.contains(` ERROR: ${logs.error}`));
           it('should log warnings and info messages to stdout', () =>
             expect(this.result)
               .to.have.property('stdout')
               .that.contains(` WARN: ${logs.warn}`)
               .and.contains(` INFO: ${logs.info}`)
-              .and.does.not.contain(` VERBOSE: ${logs.verbose}`));
+              .and.does.not.contain(` VERBOSE: ${logs.verbose}`)
+              .and.does.not.contain(` DEBUG: ${logs.debug}`));
         });
 
         describe('the file logger', () => {
@@ -250,14 +249,14 @@ describe('Logger', function () {
           it('should log errors to stderr', () =>
             expect(this.result)
               .to.have.property('stderr')
-              .that.contains(` ERROR: ${logs.error}`)
-              .and.does.not.contain(` DEBUG: ${logs.debug}`));
+              .that.contains(` ERROR: ${logs.error}`));
           it('should log warnings and info messages to stdout', () =>
             expect(this.result)
               .to.have.property('stdout')
               .that.contains(` WARN: ${logs.warn}`)
               .and.contains(` INFO: ${logs.info}`)
-              .and.does.not.contain(` VERBOSE: ${logs.verbose}`));
+              .and.does.not.contain(` VERBOSE: ${logs.verbose}`)
+              .and.does.not.contain(` DEBUG: ${logs.debug}`));
         });
 
         describe('the file logger', () => {

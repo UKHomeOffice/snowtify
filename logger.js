@@ -23,7 +23,9 @@ const options  = inputOptions.default(defaults).env('PLUGIN').argv;
 const logger = winston.createLogger({
   level:      options.logLevel,
   format:     combine(timestamp(), format),
-  transports: [ new winston.transports.Console() ]
+  transports: [
+    new winston.transports.Console({ stderrLevels: [ 'error' ] })
+  ]
 });
 logger.verbose('Logging at level: ' + options.logLevel);
 
