@@ -17,7 +17,7 @@ app.listen = function listen() {
 
 describe('index.js', () => {
   const req    = { };
-  req.post     = req.auth = req.type = req.set = req.send = req.then = req.catch = () => req;
+  req.post     = req.auth = req.proxy = req.type = req.set = req.send = req.then = req.catch = () => req;
   // you are now leaving hack city...
   const conf   = { };
   const plugin = proxyquire('..', { superagent: req, './config': conf });

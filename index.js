@@ -13,6 +13,9 @@ const error   = (err, status, res) => {
   return err;
 };
 
+require('superagent-proxy')(request);
+
+
 // handle response from ServiceNow API
 const report = res => {
   logger.debug('handle response from ServiceNow');
@@ -51,6 +54,7 @@ const report = res => {
 logger.debug('sending details to ServiceNow');
 module.exports = request
   .post(config.endpoint)
+  .proxy(config.proxy)
   .auth(config.username, config.password)
   .type('application/json')
   .set('Accept', 'application/json')
