@@ -5,6 +5,7 @@ const http     = require('http');
 const snowPath = rewire('../config').__get__('snowPath');             // eslint-disable-line no-underscore-dangle
 const newID    = rewire('./snow-api-mock/rest-api').__get__('newID'); // eslint-disable-line no-underscore-dangle
 const mockPort = 3000;
+const mockProxyPort = 3001;
 const app      = require('../node_modules/express/lib/application');
 let server;
 // welcome to hack city
@@ -318,6 +319,60 @@ describe('index.js', () => {
           it('should throw a 500 JSON parsing error', () => expect(() => report(fakeResponse))
             .to.throw(Error, /Unexpected token .? in JSON at position \d+/).with.property('status', 500));
         });
+      });
+    });
+
+    after('close the dyson mock API service', () => {
+      server.close();
+    });
+  });
+
+  describe('Make requests via a proxy to the ServiceNow API', () => {
+    before('start the dyson mock proxy service', () => {
+      require('dyson/lib/dyson').bootstrap({
+        port:         mockProxyPort,
+        configDir:    'test/snow-api-mock',
+        proxy:        false,
+        multiRequest: ',',
+        quiet:        true
+      });
+    });
+
+    describe('send new deployment notification via the proxy', () => {
+      const config = {
+        newChange: true,
+        proxy: `http://localhost:${mockProxyPort}`,
+        endpoint:  `http://localhost:${mockPort}/${snowPath}`,
+        username:  'snow-user',
+        password:  'snow-pass',
+        message:   JSON.stringify({
+          messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',
+          'external_identifier': 'ext ID',
+          payload:               {
+            title:       'new deployment',
+            endTime:     '4000-01-01 13:09:08',
+            description: 'something new',
+            supplierRef: 'ext ID',
+            testing:     'the test results'
+          }
+        })
+      };
+      before(() => {
+        sinon.stub(fs, 'writeFileSync');
+      });
+
+      it('should receive a 201 response', () =>
+        expect(proxyquire('..', { './config': config, fs: fs, './logger': logger })).to.eventually.include({
+          status: 201,
+          text: JSON.stringify({
+            result: {
+              'internal_identifier': newID
+            }
+          })
+        }));
+
+      after(() => {
+        fs.writeFileSync.restore();
       });
     });
 

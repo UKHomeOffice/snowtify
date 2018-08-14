@@ -51,7 +51,7 @@ const comments          = pe.PLUGIN_COMMENTS || pe.SNOW_COMMENTS || commentsFile
 const deploymentOutcome = /^success$/i.test(pe.PLUGIN_DEPLOYMENT_OUTCOME || pe.SNOW_STATUS || pe.DRONE_BUILD_STATUS);
 const newChange         = newDeployment || !(statusUpdate || comments);
 const failOnError       = !/^false$/i.test(pe.PLUGIN_FAIL_ON_ERROR || pe.SNOW_FAIL_ON_ERROR);
-const proxy             = pe.PLUGIN_PROXY;
+const proxy             = pe.PLUGIN_PROXY || pe.SNOW_PROXY;
 const messageTemplates  = {
   openChange: {
     messageid:             'HO_SIAM_IN_REST_CHG_POST_JSON',

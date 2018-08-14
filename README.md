@@ -130,6 +130,14 @@ the `SNOW_DEPLOY_TO` and `DEPLOY_TO` settings. See
  - [SNOW_PROD_HOST | PLUGIN_PROD_HOST](#snow_prod_host--plugin_prod_host), and
  - [SNOW_TEST_HOST | PLUGIN_TEST_HOST](#snow_test_host--plugin_test_host).
 
+##### SNOW_PROXY | PLUGIN_PROXY
+Optional.
+
+If set, this is the http proxy to use, in situations where an outbound proxy is required.
+
+e.g. SNOW_PROXY=http://168.63.43.102:3128   
+
+
 #### Authentication options
 The utility will decide which credentials to use based on the following order of preference:
  1. `USERNAME`, `PASSWORD` configured directly against the drone plugin
