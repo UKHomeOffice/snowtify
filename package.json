@@ -54,6 +54,7 @@
   "dependencies": {
     "moment": "^2.20.1",
     "superagent": "^3.8.2",
+    "superagent-proxy": "^1.0.3",
     "winston": "^3.0.0",
     "yargs": "^11.0.0"
   }
