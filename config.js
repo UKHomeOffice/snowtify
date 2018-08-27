@@ -2,7 +2,7 @@
 
 const fs     = require('fs');
 const moment = require('moment');
-const format = 'YYYY-MM-DD HH:mm:ss';
+const format = 'YYYY-MM-DD HH:mm:ss ZZ';
 const logger = require('./logger');
 
 const loadFromFile = file => { // eslint-disable-line consistent-return
