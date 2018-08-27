@@ -9,7 +9,7 @@ const snowP  = prop(config, 'snowPath');
 
 // fake modules
 const fmoment = function () {
-  return arguments.length ? moment(...arguments) : moment('2000-01-01 13:00:00');
+  return arguments.length ? moment(...arguments) : moment('2000-08-01 13:00:00');
 };
 const ffs = files => {
   const fakeFS = Object.create(fs);
@@ -254,7 +254,7 @@ describe('Config module', () => {
         it('should have a payload in the message', () => expect(this.config.message).to.have.property('payload')
           .that.is.an('object').which.deep.equals({
             title: `Deployment #${this.env.DRONE_BUILD_NUMBER} of ${this.env.DRONE_REPO_NAME}`,
-            endTime: '2000-01-01 13:30:00',
+            endTime: `2000-08-01 13:30:00 ${moment().format('ZZ')}`,
             description: this.desc,
             supplierRef: this.extID
           }));
