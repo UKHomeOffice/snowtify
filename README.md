@@ -216,9 +216,19 @@ template: `Deployment #${BUILD_NUMBER} of ${REPO_NAME}`. See
  - [BUILD_NUMBER | DRONE_BUILD_NUMBER](#build_number--drone_build_number), and
  - [REPO_NAME | DRONE_REPO_NAME](#repo_name--drone_repo_name).
 
+#### SNOW_START_TIME | PLUGIN_START_TIME
+The expected time the change will commence. This value is expected to be a date-time string with the
+format: `YYYY-MM-DD HH:mm:ss`. If omitted, the current time is used as a default. See
+[SNOW_END_TIME | PLUGIN_END_TIME](#snow-end-time--plugin-end-time).
+
 #### SNOW_END_TIME | PLUGIN_END_TIME
 The expected completion time of the change. This value is expected to be a date-time string with the
-format: `YYYY-MM-DD HH:mm:ss`. If omitted, a default of the current time plus 30 minutes will be used.
+format: `YYYY-MM-DD HH:mm:ss`. If omitted, a default calculated from the start time plus 30 minutes
+will be used, otherwise if the start time is also omitted the default will be the current time plus
+30 minutes. See [SNOW_START_TIME | PLUGIN_START_TIME](#snow-start-time--plugin-start-time).
+
+NOTE: it is possible to provide an end time in the past, however to do so a start time MUST also be
+provided, and the start time MUST be [chronologically] before the end time.
 
 #### SNOW_DESC_FILE | PLUGIN_DESCRIPTION_FILE
 Path to a file containing the full description of the new change - e.g. the relevant commit history,
