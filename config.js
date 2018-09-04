@@ -2,7 +2,7 @@
 
 const fs     = require('fs');
 const moment = require('moment');
-const format = 'YYYY-MM-DD HH:mm:ss ZZ';
+const format = 'YYYY-MM-DD HH:mm:ss';
 const logger = require('./logger');
 
 const loadFromFile = file => { // eslint-disable-line consistent-return
@@ -41,7 +41,9 @@ const endpoint          = pe.PLUGIN_ENDPOINT || pe.SNOW_ENDPOINT;
 const newDeployment     = /^deployment$/i.test(pe.PLUGIN_NOTIFICATION_TYPE || pe.SNOW_NOTIFICATION_TYPE);
 const statusUpdate      = /^(status)? *update$/i.test(pe.PLUGIN_NOTIFICATION_TYPE || pe.SNOW_NOTIFICATION_TYPE);
 const title             = pe.PLUGIN_TITLE || pe.SNOW_TITLE || `Deployment #${buildNumber} of ${repo}`;
-const endTime           = pe.PLUGIN_END_TIME || pe.SNOW_END_TIME || moment().add(30, 'minutes').format(format);
+const startTime         = pe.PLUGIN_START_TIME || pe.SNOW_START_TIME || moment().format(format);
+const startMoment       = moment(startTime, format);
+const endTime           = pe.PLUGIN_END_TIME || pe.SNOW_END_TIME || startMoment.add(30, 'minutes').format(format);
 const descriptionFile   = !statusUpdate && loadFromFile(pe.PLUGIN_DESCRIPTION_FILE || pe.SNOW_DESC_FILE);
 const description       = pe.PLUGIN_DESCRIPTION || pe.SNOW_DESC || descriptionFile;
 const testingFile       = !statusUpdate && loadFromFile(pe.PLUGIN_TESTING_FILE || pe.SNOW_TESTING_FILE);
@@ -58,6 +60,7 @@ const messageTemplates  = {
     'external_identifier': externalID,
     payload:               {
       title:       title,
+      startTime:   startTime,
       endTime:     endTime,
       description: stripControl(description),
       supplierRef: externalID,
@@ -72,6 +75,12 @@ const messageTemplates  = {
     }
   }
 };
+
+if (moment(endTime, format).isBefore(startMoment)) {
+  throw new RangeError(`The deployment start time MUST be before the end time.
+If you want to set an end time in the past you must also explicitly set a start time before the end time.
+See PLUGIN_START_TIME, SNOW_START_TIME, PLUGIN_END_TIME, SNOW_END_TIME`);
+}
 
 if (testing) {
   messageTemplates.openChange.payload.testing = stripControl(testing);

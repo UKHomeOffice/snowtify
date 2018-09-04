@@ -100,6 +100,7 @@ describe('Config module', () => {
             PLUGIN_EXTERNAL_ID:       'ext-id',
             PLUGIN_NOTIFICATION_TYPE: 'deployment',
             PLUGIN_TITLE:             'title',
+            PLUGIN_START_TIME:        '2000-01-01 12:00:00',
             PLUGIN_END_TIME:          '2000-01-01 12:30:00',
             PLUGIN_DESCRIPTION:       'desc',
             PLUGIN_TESTING:           'tests',
@@ -128,6 +129,7 @@ describe('Config module', () => {
         it('should have a payload in the message', () => expect(this.config.message).to.have.property('payload')
           .that.is.an('object').which.deep.equals({
             title: this.env.PLUGIN_TITLE,
+            startTime: this.env.PLUGIN_START_TIME,
             endTime: this.env.PLUGIN_END_TIME,
             description: this.env.PLUGIN_DESCRIPTION,
             supplierRef: this.env.PLUGIN_EXTERNAL_ID,
@@ -254,7 +256,8 @@ describe('Config module', () => {
         it('should have a payload in the message', () => expect(this.config.message).to.have.property('payload')
           .that.is.an('object').which.deep.equals({
             title: `Deployment #${this.env.DRONE_BUILD_NUMBER} of ${this.env.DRONE_REPO_NAME}`,
-            endTime: `2000-08-01 13:30:00 ${moment().format('ZZ')}`,
+            startTime: '2000-08-01 13:00:00',
+            endTime: '2000-08-01 13:30:00',
             description: this.desc,
             supplierRef: this.extID
           }));
@@ -340,5 +343,24 @@ describe('Config module', () => {
           .that.is.an('object').which.deep.equals({ success: 'false', comments: this.comments }));
       });
     });
+  });
+
+  describe('an error should be thrown if the end time', () => {
+    before(() => {
+      const env = { PLUGIN_END_TIME: '2000-01-01 00:00:00' };
+      global.injected = { env: env };
+    });
+    it('is in the past and no start time has been provided', () =>
+      expect(() => rewire('../config')).to.Throw(RangeError, 'The deployment start time MUST be before the end time'));
+
+    before(() => {
+      const env = {
+        PLUGIN_START_TIME: '2000-01-01 10:00:00',
+        PLUGIN_END_TIME: '2000-01-01 00:00:00'
+      };
+      global.injected = { env: env };
+    });
+    it('is before the start time', () =>
+      expect(() => rewire('../config')).to.Throw(RangeError, 'The deployment start time MUST be before the end time'));
   });
 });
