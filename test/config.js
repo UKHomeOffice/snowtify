@@ -86,6 +86,35 @@ describe('Config module', () => {
   });
 
   describe('exported object should contain values from environment variables', () => {
+    describe('if the disabled flag is set', () => {
+      before(() => {
+        const env = {
+          PLUGIN_SNOW_DISABLED:     'true',
+          PLUGIN_PROTOCOL:          'test',
+          PLUGIN_PROD_HOST:         'test',
+          PLUGIN_TEST_HOST:         'test',
+          PLUGIN_SEND_TO_PROD:      'test',
+          PLUGIN_USERNAME:          'test',
+          PLUGIN_PASSWORD:          'test',
+          PLUGIN_INTERNAL_ID_FILE:  'test',
+          PLUGIN_EXTERNAL_ID:       'test',
+          PLUGIN_NOTIFICATION_TYPE: 'test',
+          PLUGIN_TITLE:             'test',
+          PLUGIN_START_TIME:        'test',
+          PLUGIN_END_TIME:          'test',
+          PLUGIN_DESCRIPTION:       'test',
+          PLUGIN_TESTING:           'test',
+          PLUGIN_FAIL_ON_ERROR:     'test'
+        };
+        this.env                           = env;
+        global.injected                    = { env: env };
+        const files                        = { };
+        files[env.PLUGIN_INTERNAL_ID_FILE] = '';
+        this.config                        = proxyquire('../config', { fs: ffs(files), moment: fmoment });
+      });
+      it('should be the only item', () => expect(this.config).to.be.an('object').that.deep.equals({ disabled: true }));
+    });
+
     describe('with maximal (explicit) configuration for', () => {
       describe('a new deployment notification returns an object which', function () {
         before(() => {
@@ -136,6 +165,7 @@ describe('Config module', () => {
             testing: this.env.PLUGIN_TESTING
           }));
         it('should have fail on error disabled', () => expect(this.config).to.have.property('failOnError', false));
+        it('should not be disabled', () => expect(this.config.disabled).not.to.be.true);
       });
 
       describe('a successful deployment notification returns an object which', function () {
