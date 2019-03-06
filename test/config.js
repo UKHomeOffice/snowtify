@@ -56,7 +56,7 @@ describe('Config module', () => {
       });
       it('should throw an error if the specified file does not exist', () => {
         const file = 'not-a-file';
-        expect(() => this.loadFromFile(file)).to.throw(Error, `ENOENT, no such file or directory '${file}'`);
+        expect(() => this.loadFromFile(file)).to.throw(Error);
         expect(this.readFileSync).to.have.been.calledWith(file);
         expect(this.readFileSync).to.have.thrown('Error');
       });
