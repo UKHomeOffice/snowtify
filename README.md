@@ -48,7 +48,7 @@ correspond to the following environment variables:
 [PLUGIN_DESCRIPTION](#snow_desc--plugin_description),
 [PLUGIN_COMMENTS](#snow_comments--plugin_comments),
 [PLUGIN_DEPLOYMENT_OUTCOME](#snow_status--plugin_deployment_outcome). All of the variable names
-listed in the [Input options](#input_options) section that start with `PLUGIN_` can be configured
+listed in the [Input options](#input-options) section that start with `PLUGIN_` can be configured
 directly against the drone job (without the `PLUGIN_` prefix).
 
 The `.drone.yml` file for this project
