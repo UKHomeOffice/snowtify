@@ -13,7 +13,8 @@
     "watch:unit": "nodemon -w src -w test -x 'npm test'",
     "start:mock-api": "dyson test/snow-api-mock",
     "stop:mock-api": "killall ServiceNow-mock-api",
-    "version": "./.version.js && git add .drone.yml"
+    "version": "./.version.js && git add .drone.yml",
+    "postinstall": "git config core.hooksPath .githooks"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,8 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chai-json": "github:RobinKnipe/chai-json",
+    "commitizen": "^4.2.1",
+    "cz-conventional-changelog": "^3.2.0",
     "dyson": "^3.0.3",
     "eslint": "^4.17.0",
     "eslint-plugin-filenames": "^1.2.0",
