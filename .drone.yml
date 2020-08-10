@@ -6,7 +6,7 @@ matrix:
   MINOR:
     - 3
   PATCH:
-    - 0
+    - 1
   DOCKER_USERNAME:
     - ukhomeofficedigital+snowtify
   DOCKER_REPO:
@@ -46,6 +46,7 @@ pipeline:
     image: '${DOCKER_REPO}/${DOCKER_PATH}/${NAME}:${MAJOR}.${MINOR}.${PATCH}-${DRONE_COMMIT:0:10}'
     secrets: [ snow_user, snow_pass ]
     description: 'End-to-end test for the ServiceNow CD utility. Build #${DRONE_BUILD_NUMBER}'
+    fail_on_error: false
     when:
       event: push
       branch: master
@@ -56,6 +57,7 @@ pipeline:
     secrets: [ snow_user, snow_pass ]
     comments: 'Successfully tested build #${DRONE_BUILD_NUMBER}'
     deployment_outcome: success
+    fail_on_error: false
     when:
       event: push
       branch: master
