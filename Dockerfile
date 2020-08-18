@@ -1,8 +1,6 @@
-FROM quay.io/ukhomeofficedigital/nodejs-base:v8 AS base
+FROM node:12-alpine AS base
 
-RUN yum clean -q all && \
-    yum update -y -q && \
-    rpm --rebuilddb --quiet
+RUN apk upgrade --no-cache
 
 WORKDIR /app
 COPY ./package.json /app/
@@ -16,9 +14,8 @@ ENTRYPOINT ["/app/entrypoint.sh"]
 
 FROM base
 
-RUN yum install -y -q git && \
-    yum clean -q all && \
-    rpm --rebuilddb --quiet
+RUN apk upgrade --no-cache \
+ && apk add git
 
 COPY .eslintignore .eslintrc.yaml /app/
 COPY test /app/test
