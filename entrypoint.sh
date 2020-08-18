@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # make sure the internal ID file exists if it is supplied
-function affirm() {
+affirm() {
     if [ -n "$1" ] ; then
         export PLUGIN_INTERNAL_ID_FILE="$(cd "$(dirname "$1")"; pwd)/$(basename "$1")"
         touch "${PLUGIN_INTERNAL_ID_FILE}"
