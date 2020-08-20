@@ -11,4 +11,4 @@ affirm() {
 affirm "${PLUGIN_INTERNAL_ID_FILE:-$SNOW_INT_ID_FILE}"
 
 cd /app/
-./index.js
+./snowtify

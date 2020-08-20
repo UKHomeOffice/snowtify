@@ -3,7 +3,7 @@
   "version": "0.3.1",
   "description": "A `drone.io` plugin to connect the ServiceNow API to a CD pipeline.",
   "main": "index.js",
-  "bin": "./index.js",
+  "bin": "./snowtify.js",
   "scripts": {
     "start": "node .",
     "test": "npm-run-all -s lint cover check-coverage",
