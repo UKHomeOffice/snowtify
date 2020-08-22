@@ -3,7 +3,7 @@
 const fs     = require('fs');
 const mfs    = require('mock-fs');
 const moment = require('moment');
-const config = rewire('../config');
+const config = rewire('../src/config');
 const prop   = (obj, property) => obj.__get__(property); // eslint-disable-line no-underscore-dangle
 const snowP  = prop(config, 'snowPath');
 
@@ -107,10 +107,10 @@ describe('Config module', () => {
           PLUGIN_FAIL_ON_ERROR:     'test'
         };
         this.env                           = env;
-        global.injected                    = { env: env };
+        global.injected                    = { env };
         const files                        = { };
         files[env.PLUGIN_INTERNAL_ID_FILE] = '';
-        this.config                        = proxyquire('../config', { fs: ffs(files), moment: fmoment });
+        this.config                        = proxyquire('../src/config', { fs: ffs(files), moment: fmoment });
       });
       it('should be the only item', () => expect(this.config).to.be.an('object').that.deep.equals({ disabled: true }));
     });
@@ -136,10 +136,10 @@ describe('Config module', () => {
             PLUGIN_FAIL_ON_ERROR:     'false'
           };
           this.env                           = env;
-          global.injected                    = { env: env };
+          global.injected                    = { env };
           const files                        = { };
           files[env.PLUGIN_INTERNAL_ID_FILE] = '';
-          this.config                        = proxyquire('../config', { fs: ffs(files), moment: fmoment });
+          this.config                        = proxyquire('../src/config', { fs: ffs(files), moment: fmoment });
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
         it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', true));
@@ -185,8 +185,8 @@ describe('Config module', () => {
             PLUGIN_FAIL_ON_ERROR:      'yes'
           };
           this.env        = env;
-          global.injected = { env: env };
-          this.config     = rewire('../config');
+          global.injected = { env };
+          this.config     = rewire('../src/config');
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
         it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', false));
@@ -227,8 +227,8 @@ describe('Config module', () => {
             PLUGIN_COMMENTS:           'it did not go well'
           };
           this.env        = env;
-          global.injected = { env: env };
-          this.config     = rewire('../config');
+          global.injected = { env };
+          this.config     = rewire('../src/config');
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
         it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', false));
@@ -267,8 +267,8 @@ describe('Config module', () => {
           this.desc                 = 'deployment desc from file';
           const files               = { };
           files[env.SNOW_DESC_FILE] = this.desc;
-          global.injected           = { env: env };
-          this.config               = proxyquire('../config', { fs: ffs(files), moment: fmoment });
+          global.injected           = { env };
+          this.config               = proxyquire('../src/config', { fs: ffs(files), moment: fmoment });
           this.extID                = `${env.SNOW_PROD_USER}-${env.DRONE_REPO_NAME}-${env.DRONE_BUILD_NUMBER}`;
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
@@ -317,8 +317,8 @@ describe('Config module', () => {
           files[env.SNOW_INT_ID_FILE]   = this.intID;
           files[env.SNOW_DESC_FILE]     = 'description from earlier notification, overridden by update comments';
           files[env.SNOW_COMMENTS_FILE] = this.comments;
-          global.injected               = { env: env };
-          this.config                   = proxyquire('../config', { fs: ffs(files), moment: fmoment });
+          global.injected               = { env };
+          this.config                   = proxyquire('../src/config', { fs: ffs(files), moment: fmoment });
         });
         it('should return a populated config object', () => expect(this.config).to.be.an('object'));
         it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', false));
@@ -354,8 +354,8 @@ describe('Config module', () => {
           files[env.SNOW_INT_ID_FILE]   = this.intID;
           files[env.SNOW_DESC_FILE]     = 'description from earlier notification, overridden by update comments';
           files[env.SNOW_COMMENTS_FILE] = this.comments;
-          global.injected               = { env: env };
-          this.config                   = proxyquire('../config', { fs: ffs(files), moment: fmoment });
+          global.injected               = { env };
+          this.config                   = proxyquire('../src/config', { fs: ffs(files), moment: fmoment });
         });
         it('should return a correctly populated config object', () => expect(this.config).to.be.an('object'));
         it('should indicate the notification type', () => expect(this.config).to.have.property('newChange', false));
@@ -378,19 +378,21 @@ describe('Config module', () => {
   describe('an error should be thrown if the end time', () => {
     before(() => {
       const env = { PLUGIN_END_TIME: '2000-01-01 00:00:00' };
-      global.injected = { env: env };
+      global.injected = { env };
     });
     it('is in the past and no start time has been provided', () =>
-      expect(() => rewire('../config')).to.Throw(RangeError, 'The deployment start time MUST be before the end time'));
+      expect(() => rewire('../src/config'))
+        .to.Throw(RangeError, 'The deployment start time MUST be before the end time'));
 
     before(() => {
       const env = {
         PLUGIN_START_TIME: '2000-01-01 10:00:00',
         PLUGIN_END_TIME: '2000-01-01 00:00:00'
       };
-      global.injected = { env: env };
+      global.injected = { env };
     });
     it('is before the start time', () =>
-      expect(() => rewire('../config')).to.Throw(RangeError, 'The deployment start time MUST be before the end time'));
+      expect(() => rewire('../src/config'))
+        .to.Throw(RangeError, 'The deployment start time MUST be before the end time'));
   });
 });

@@ -2,7 +2,7 @@
 
 const fs       = require('fs');
 const http     = require('http');
-const snowPath = rewire('../config').__get__('snowPath');             // eslint-disable-line no-underscore-dangle
+const snowPath = rewire('../src/config').__get__('snowPath');             // eslint-disable-line no-underscore-dangle
 const newID    = rewire('./snow-api-mock/rest-api').__get__('newID'); // eslint-disable-line no-underscore-dangle
 const mockPort = 3000;
 const mockProxyPort = 3001;
@@ -81,7 +81,7 @@ describe('index.js', () => {
       });
 
       it('should receive a 201 response', () =>
-        expect(proxyquire('..', { './config': config, fs: fs, './logger': logger })).to.eventually.include({
+        expect(proxyquire('..', { './config': config, fs, './logger': logger })).to.eventually.include({
           status: 201,
           text: JSON.stringify({
             result: {
@@ -102,7 +102,7 @@ describe('index.js', () => {
         });
 
         it('should receive a 201 response', () =>
-          expect(proxyquire('..', { './config': withFile, fs: fs, './logger': logger })).to.eventually.include({
+          expect(proxyquire('..', { './config': withFile, fs, './logger': logger })).to.eventually.include({
             status: 201,
             text: JSON.stringify({
               result: {
@@ -362,7 +362,7 @@ describe('index.js', () => {
       });
 
       it('should receive a 201 response', () =>
-        expect(proxyquire('..', { './config': config, fs: fs, './logger': logger })).to.eventually.include({
+        expect(proxyquire('..', { './config': config, fs, './logger': logger })).to.eventually.include({
           status: 201,
           text: JSON.stringify({
             result: {

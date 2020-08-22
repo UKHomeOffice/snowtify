@@ -2,7 +2,7 @@
   "name": "snowtify",
   "version": "0.3.1",
   "description": "A `drone.io` plugin to connect the ServiceNow API to a CD pipeline.",
-  "main": "index.js",
+  "main": "src/index.js",
   "bin": "./snowtify.js",
   "scripts": {
     "start": "node .",
@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "cover": "nyc mocha ./test",
     "check-coverage": "nyc check-coverage --statements 95 --branches 95 --functions 100 --lines 95",
-    "watch:unit": "nodemon -w index.js -w config.js -w test -x 'npm test'",
+    "watch:unit": "nodemon -w src -w test -x 'npm test'",
     "start:mock-api": "dyson test/snow-api-mock",
     "stop:mock-api": "killall ServiceNow-mock-api",
     "version": "./.version.js && git add .drone.yml"

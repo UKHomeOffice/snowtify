@@ -7,7 +7,8 @@ COPY ./package.json /app/
 ENV NODE_ENV production
 RUN npm install --only production > .npm-install.log 2>&1 && rm .npm-install.log || ( EC=$?; cat .npm-install.log; exit $EC )
 
-COPY snowtify index.js config.js logger.js entrypoint.sh /app/
+COPY src /app/src
+COPY snowtify entrypoint.sh /app/
 
 ENTRYPOINT ["/app/entrypoint.sh"]
 
