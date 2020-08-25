@@ -365,7 +365,7 @@ rules:
   array-bracket-spacing:
     - 1
     # enforce them to be "always" used when possible, or "never" used
-    - always
+    - never
   # require or disallow spaces inside parentheses
   space-in-parens:
     - 2

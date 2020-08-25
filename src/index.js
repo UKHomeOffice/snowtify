@@ -1,10 +1,8 @@
-#!/usr/bin/env node
-
 'use strict';
 
-const fs      = require('fs');
-const config  = require('./config');
-const logger  = require('./logger');
+const fs     = require('fs');
+const config = require('./config').configure(process.env);
+const logger = require('./logger');
 
 if (config.disabled) {
   logger.info('Exiting because Snowtify is disabled. See SNOW_DISABLED');
@@ -71,7 +69,7 @@ if (config.disabled) {
       if (err.response) {
         logger.info(err.response.json || err.response.text);
       }
-      process.exit(config.failOnError ? err.status || 2 : 0); // eslint-disable-line no-process-exit
+      process.exit(config.failOnError === false ? 0 : (err.status || 2)); // eslint-disable-line no-process-exit
       throw err;
     });
 
