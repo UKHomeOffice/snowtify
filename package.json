@@ -9,7 +9,7 @@
     "test": "npm-run-all -s lint cover check-coverage",
     "lint": "eslint .",
     "cover": "nyc mocha ./test",
-    "check-coverage": "nyc check-coverage --statements 95 --branches 95 --functions 100 --lines 95",
+    "check-coverage": "nyc check-coverage",
     "watch:unit": "nodemon -w src -w test -x 'npm test'",
     "start:mock-api": "dyson test/snow-api-mock",
     "stop:mock-api": "killall ServiceNow-mock-api",

@@ -1,0 +1,13 @@
+{
+  "branches":   95,
+  "lines":      95,
+  "functions":  95,
+  "statements": 95,
+  "watermarks": {
+    "lines":      [95, 98],
+    "functions":  [95, 98],
+    "branches":   [95, 98],
+    "statements": [95, 98]
+  },
+  "per-file": true
+}
