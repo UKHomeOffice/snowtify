@@ -1,8 +1,8 @@
 'use strict';
 
-const fs      = require('fs');
-const config  = require('./config');
-const logger  = require('./logger');
+const fs     = require('fs');
+const config = require('./config').configure(process.env);
+const logger = require('./logger');
 
 if (config.disabled) {
   logger.info('Exiting because Snowtify is disabled. See SNOW_DISABLED');

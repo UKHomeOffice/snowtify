@@ -2,7 +2,7 @@
 
 const fs       = require('fs');
 const http     = require('http');
-const snowPath = rewire('../src/config').__get__('snowPath');             // eslint-disable-line no-underscore-dangle
+const snowPath = require('../src/config').DEFAULTS.SNOW_PATH;             // eslint-disable-line no-underscore-dangle
 const newID    = rewire('./snow-api-mock/rest-api').__get__('newID'); // eslint-disable-line no-underscore-dangle
 const mockPort = 3000;
 const mockProxyPort = 3001;
@@ -20,8 +20,8 @@ describe('index.js', () => {
   const req    = { };
   req.post     = req.auth = req.proxy = req.type = req.set = req.send = req.then = req.catch = () => req;
   // you are now leaving hack city...
-  const conf   = { };
-  const plugin = proxyquire('..', { superagent: req, './config': conf });
+  const config = c => ({ configure: () => c });
+  const plugin = proxyquire('..', { superagent: req, './config': config({ }) });
   const redact = plugin.redact;
   const report = plugin.report;
   const logger = {
@@ -59,7 +59,7 @@ describe('index.js', () => {
     });
 
     describe('send new deployment notification', () => {
-      const config = {
+      const conf = {
         newChange: true,
         endpoint:  `http://localhost:${mockPort}/${snowPath}`,
         username:  'snow-user',
@@ -76,12 +76,13 @@ describe('index.js', () => {
           }
         })
       };
+
       before(() => {
         sinon.stub(fs, 'writeFileSync');
       });
 
       it('should receive a 201 response', () =>
-        expect(proxyquire('..', { './config': config, fs, './logger': logger })).to.eventually.include({
+        expect(proxyquire('..', { './config': config(conf), fs, './logger': logger })).to.eventually.include({
           status: 201,
           text: JSON.stringify({
             result: {
@@ -95,14 +96,13 @@ describe('index.js', () => {
         expect(logger.info).to.have.been.calledWith(`Notification successfully sent - new change ID: "${newID}"`));
 
       describe('check the generated internal ID is saved', () => {
-        const withFile     = Object.assign({ }, config);
-        withFile.intIDFile = '/test/ext';
+        const withFile = Object.assign({ }, conf, { intIDFile: '/test/ext' });
         before(() => {
           fs.writeFileSync.resetHistory();
         });
 
         it('should receive a 201 response', () =>
-          expect(proxyquire('..', { './config': withFile, fs, './logger': logger })).to.eventually.include({
+          expect(proxyquire('..', { './config': config(withFile), fs, './logger': logger })).to.eventually.include({
             status: 201,
             text: JSON.stringify({
               result: {
@@ -123,7 +123,7 @@ describe('index.js', () => {
 
     describe('send status update notification', () => {
       describe('for a successful deployment', function () {
-        const config = {
+        const conf = {
           newChange: false,
           success:   true,
           endpoint: `http://localhost:${mockPort}/${snowPath}`,
@@ -137,14 +137,14 @@ describe('index.js', () => {
         };
 
         it('should receive a 201 response', () =>
-          expect(proxyquire('..', { './config': config, './logger': logger }))
+          expect(proxyquire('..', { './config': config(conf), './logger': logger }))
             .to.eventually.have.property('status', 201));
         it('should have reported the status', () =>
           expect(logger.info).to.have.been.calledWith('Notification successfully sent - change completed'));
       });
 
       describe('for an unsuccessful deployment', function () {
-        const config = {
+        const conf = {
           newChange: false,
           success:   false,
           endpoint: `http://localhost:${mockPort}/${snowPath}`,
@@ -158,7 +158,7 @@ describe('index.js', () => {
         };
 
         it('should receive a 201 response', () =>
-          expect(proxyquire('..', { './config': config, './logger': logger }))
+          expect(proxyquire('..', { './config': config(conf), './logger': logger }))
             .to.eventually.have.property('status', 201));
         it('should have reported the status', () =>
           expect(logger.info).to.have.been.calledWith('Notification successfully sent - change cancelled'));
@@ -167,7 +167,7 @@ describe('index.js', () => {
 
     describe('Check failures are reported', () => {
       describe('when bad credentials are provided', () => {
-        const config = {
+        const conf = {
           endpoint: `http://localhost:${mockPort}/${snowPath}`,
           message:  JSON.stringify({ payload: 'unauthorised notification' })
         };
@@ -177,7 +177,7 @@ describe('index.js', () => {
         });
 
         it('should report a 401 Unauthorised response when wrong details are sent', () =>
-          expect(proxyquire('..', { './config': config }))
+          expect(proxyquire('..', { './config': config(conf) }))
             .to.eventually.be.rejectedWith(Error, 'Unauthorized')
             .with.property('response').which.includes({
               status: 401,
@@ -187,7 +187,7 @@ describe('index.js', () => {
       });
 
       describe('when an error occurs the script still exits cleanly if FAIL_ON_ERROR is set to FALSE', () => {
-        const config = {
+        const conf = {
           endpoint:    `http://localhost:${mockPort}/${snowPath}`,
           message:     JSON.stringify({ payload: 'unauthorised notification' }),
           failOnError: false
@@ -198,7 +198,7 @@ describe('index.js', () => {
         });
 
         it('should report a 401 Unauthorised response as normal', () =>
-          expect(proxyquire('..', { './config': config }))
+          expect(proxyquire('..', { './config': config(conf) }))
             .to.eventually.be.rejectedWith(Error, 'Unauthorized')
             .with.property('response').which.includes({
               status: 401,
@@ -208,7 +208,7 @@ describe('index.js', () => {
       });
 
       describe('when the target internal_identifier file cannot be written to', () => {
-        const config = {
+        const conf = {
           newChange: true,
           intIDFile: '/not/a/proper-file',
           endpoint: `http://localhost:${mockPort}/${snowPath}`,
@@ -231,7 +231,7 @@ describe('index.js', () => {
         });
 
         it('should have an empty "internal_identifier" field and report a 400 Bad Request', () =>
-          expect(proxyquire('..', { './config': config }))
+          expect(proxyquire('..', { './config': config(conf) }))
             .to.eventually.be.rejectedWith(Error, /^ENOENT: no such file or directory, open/)
             .which.does.not.have.any.keys(['status', 'response']));
         it('should exit with an error', () => expect(process.exit).to.have.been.calledOnce.and.calledWith(2));
@@ -239,7 +239,7 @@ describe('index.js', () => {
 
       describe('when a bad request is made', () => {
         describe('e.g. opening a new change with the "endTime" in the past', () => {
-          const config = {
+          const conf = {
             newChange: true,
             endpoint:  `http://localhost:${mockPort}/${snowPath}`,
             username:  'snow-user',
@@ -261,7 +261,7 @@ describe('index.js', () => {
           });
 
           it('should have an empty "internal_identifier" field and report a 400 Bad Request', () =>
-            expect(proxyquire('..', { './config': config }))
+            expect(proxyquire('..', { './config': config(conf) }))
               .to.eventually.be.rejectedWith(Error, 'Bad Request')
                 .which.includes({ status: 400 })
                 .and.has.nested.property('response.text', JSON.stringify({
@@ -271,7 +271,7 @@ describe('index.js', () => {
         });
 
         describe('e.g. send status update with bad IDs', () => {
-          const config = {
+          const conf = {
             newChange:  false,
             successful: true,
             endpoint:   `http://localhost:${mockPort}/${snowPath}`,
@@ -288,7 +288,7 @@ describe('index.js', () => {
           });
 
           it('should show "ERROR" in the "transaction_status" field and report a 400 Bad Request', () =>
-            proxyquire('..', { './config': config })
+            proxyquire('..', { './config': config(conf) })
               .then(() => {
                 throw new Error('should have failed with an "Bad Request" error, but the promise resolved');
               })
@@ -339,7 +339,7 @@ describe('index.js', () => {
     });
 
     describe('send new deployment notification via the proxy', () => {
-      const config = {
+      const conf = {
         newChange: true,
         proxy: `http://localhost:${mockProxyPort}`,
         endpoint:  `http://localhost:${mockPort}/${snowPath}`,
@@ -362,7 +362,7 @@ describe('index.js', () => {
       });
 
       it('should receive a 201 response', () =>
-        expect(proxyquire('..', { './config': config, fs, './logger': logger })).to.eventually.include({
+        expect(proxyquire('..', { './config': config(conf), fs, './logger': logger })).to.eventually.include({
           status: 201,
           text: JSON.stringify({
             result: {

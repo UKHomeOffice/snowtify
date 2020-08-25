@@ -5,6 +5,12 @@ const moment = require('moment');
 const format = 'YYYY-MM-DD HH:mm:ss';
 const logger = require('./logger');
 
+const DEFAULTS = {
+  SNOW_PATH: 'api/fho/siam_in/create_transaction',
+  PROD_HOST: 'lssiprod.service-now.com',
+  TEST_HOST: 'lssitest.service-now.com'
+};
+
 const loadFromFile = file => { // eslint-disable-line consistent-return
   if (file) {
     try {
@@ -15,58 +21,58 @@ const loadFromFile = file => { // eslint-disable-line consistent-return
     }
   }
 };
-const stripControl = text => text && text.replace(/\x1b\[\d+m/g, '').replace(/[\0-\x08\x11-\x1f]/g, '');
+const stripControl = text =>
+  text && text.replace(/\x1b\[\d+m/g, '').replace(/[\0-\x08\x11-\x1f]/g, ''); // eslint-disable-line no-control-regex
 
-logger.debug('Process environment variables');
-const pe                = global.injected && global.injected.env || process.env;
-logger.debug('env vars: ' + JSON.stringify(pe));
-const disabled          = /^true$/i.test(pe.PLUGIN_SNOW_DISABLED || pe.SNOW_DISABLED);
+const configure = env => { // eslint-disable-line complexity
+  logger.debug('Process environment variables');
+  if (/^true$/i.test(env.PLUGIN_SNOW_DISABLED || env.SNOW_DISABLED)) {
+    return { disabled: true };
+  }
 
-if (disabled) {
-  module.exports = { disabled: true };
-} else {
-  const repo = pe.REPO_NAME || pe.DRONE_REPO_NAME;
-  const buildNumber = pe.BUILD_NUMBER || pe.DRONE_BUILD_NUMBER;
-  const protocol = pe.PLUGIN_PROTOCOL || pe.SNOW_PROTOCOL || 'https';
-  const snowProdInstance = pe.PLUGIN_PROD_HOST || pe.SNOW_PROD_HOST || 'lssiprod.service-now.com';
-  const snowTestInstance = pe.PLUGIN_TEST_HOST || pe.SNOW_TEST_HOST || 'lssitest.service-now.com';
-  const deployTo = /^prod/i.test(pe.DRONE_DEPLOY_TO || pe.SNOW_DEPLOY_TO);
-  const sendToProd = /^true$/i.test(pe.PLUGIN_SEND_TO_PROD) || deployTo;
-  const testUser = pe.PLUGIN_TEST_USER || pe.SNOW_TEST_USER;
-  const prodUser = pe.PLUGIN_PROD_USER || pe.SNOW_PROD_USER;
-  const username = pe.PLUGIN_USERNAME || (sendToProd ? prodUser : testUser) || pe.SNOW_USER;
-  const testPass = pe.PLUGIN_TEST_PASS || pe.SNOW_TEST_PASS;
-  const prodPass = pe.PLUGIN_PROD_PASS || pe.SNOW_PROD_PASS;
-  const password = pe.PLUGIN_PASSWORD || (sendToProd ? prodPass : testPass) || pe.SNOW_PASS;
-  const intIDFile = pe.PLUGIN_INTERNAL_ID_FILE || pe.SNOW_INT_ID_FILE;
-  const internalID = pe.PLUGIN_INTERNAL_ID || pe.SNOW_INTERNAL_ID || loadFromFile(intIDFile);
-  const externalID = pe.PLUGIN_EXTERNAL_ID || pe.SNOW_EXTERNAL_ID || `${username}-${repo}-${buildNumber}`;
-  const snowPath = pe.PLUGIN_PATH || pe.SNOW_PATH || 'api/fho/siam_in/create_transaction';
-  const endpoint = pe.PLUGIN_ENDPOINT || pe.SNOW_ENDPOINT;
-  const newDeployment = /^deployment$/i.test(pe.PLUGIN_NOTIFICATION_TYPE || pe.SNOW_NOTIFICATION_TYPE);
-  const statusUpdate = /^(status)? *update$/i.test(pe.PLUGIN_NOTIFICATION_TYPE || pe.SNOW_NOTIFICATION_TYPE);
-  const title = pe.PLUGIN_TITLE || pe.SNOW_TITLE || `Deployment #${buildNumber} of ${repo}`;
-  const startTime = pe.PLUGIN_START_TIME || pe.SNOW_START_TIME || moment().format(format);
+  logger.debug('env vars: ' + JSON.stringify(env));
+  const repo = env.REPO_NAME || env.DRONE_REPO_NAME;
+  const buildNumber = env.BUILD_NUMBER || env.DRONE_BUILD_NUMBER;
+  const protocol = env.PLUGIN_PROTOCOL || env.SNOW_PROTOCOL || 'https';
+  const snowProdInstance = env.PLUGIN_PROD_HOST || env.SNOW_PROD_HOST || DEFAULTS.PROD_HOST;
+  const snowTestInstance = env.PLUGIN_TEST_HOST || env.SNOW_TEST_HOST || DEFAULTS.TEST_HOST;
+  const deployTo = /^prod/i.test(env.DRONE_DEPLOY_TO || env.SNOW_DEPLOY_TO);
+  const sendToProd = /^true$/i.test(env.PLUGIN_SEND_TO_PROD) || deployTo;
+  const testUser = env.PLUGIN_TEST_USER || env.SNOW_TEST_USER;
+  const prodUser = env.PLUGIN_PROD_USER || env.SNOW_PROD_USER;
+  const username = env.PLUGIN_USERNAME || (sendToProd ? prodUser : testUser) || env.SNOW_USER;
+  const testPass = env.PLUGIN_TEST_PASS || env.SNOW_TEST_PASS;
+  const prodPass = env.PLUGIN_PROD_PASS || env.SNOW_PROD_PASS;
+  const password = env.PLUGIN_PASSWORD || (sendToProd ? prodPass : testPass) || env.SNOW_PASS;
+  const intIDFile = env.PLUGIN_INTERNAL_ID_FILE || env.SNOW_INT_ID_FILE;
+  const internalID = env.PLUGIN_INTERNAL_ID || env.SNOW_INTERNAL_ID || loadFromFile(intIDFile);
+  const externalID = env.PLUGIN_EXTERNAL_ID || env.SNOW_EXTERNAL_ID || `${username}-${repo}-${buildNumber}`;
+  const snowPath = env.PLUGIN_PATH || env.SNOW_PATH || DEFAULTS.SNOW_PATH;
+  const endpoint = env.PLUGIN_ENDPOINT || env.SNOW_ENDPOINT;
+  const newDeployment = /^deployment$/i.test(env.PLUGIN_NOTIFICATION_TYPE || env.SNOW_NOTIFICATION_TYPE);
+  const statusUpdate = /^(status)? *update$/i.test(env.PLUGIN_NOTIFICATION_TYPE || env.SNOW_NOTIFICATION_TYPE);
+  const title = env.PLUGIN_TITLE || env.SNOW_TITLE || `Deployment #${buildNumber} of ${repo}`;
+  const startTime = env.PLUGIN_START_TIME || env.SNOW_START_TIME || moment().format(format);
   const startMoment = moment(startTime, format);
-  const endTime = pe.PLUGIN_END_TIME || pe.SNOW_END_TIME || startMoment.add(30, 'minutes').format(format);
-  const descriptionFile = !statusUpdate && loadFromFile(pe.PLUGIN_DESCRIPTION_FILE || pe.SNOW_DESC_FILE);
-  const description = pe.PLUGIN_DESCRIPTION || pe.SNOW_DESC || descriptionFile;
-  const testingFile = !statusUpdate && loadFromFile(pe.PLUGIN_TESTING_FILE || pe.SNOW_TESTING_FILE);
-  const testing = pe.PLUGIN_TESTING || pe.SNOW_TESTING || testingFile;
-  const commentsFile = !newDeployment && loadFromFile(pe.PLUGIN_COMMENTS_FILE || pe.SNOW_COMMENTS_FILE);
-  const comments = pe.PLUGIN_COMMENTS || pe.SNOW_COMMENTS || commentsFile;
-  const deploymentOutcome = /^success$/i.test(pe.PLUGIN_DEPLOYMENT_OUTCOME || pe.SNOW_STATUS || pe.DRONE_BUILD_STATUS);
+  const endTime = env.PLUGIN_END_TIME || env.SNOW_END_TIME || startMoment.add(30, 'minutes').format(format);
+  const descriptionFile = !statusUpdate && loadFromFile(env.PLUGIN_DESCRIPTION_FILE || env.SNOW_DESC_FILE);
+  const description = env.PLUGIN_DESCRIPTION || env.SNOW_DESC || descriptionFile;
+  const testingFile = !statusUpdate && loadFromFile(env.PLUGIN_TESTING_FILE || env.SNOW_TESTING_FILE);
+  const testing = env.PLUGIN_TESTING || env.SNOW_TESTING || testingFile;
+  const commentsFile = !newDeployment && loadFromFile(env.PLUGIN_COMMENTS_FILE || env.SNOW_COMMENTS_FILE);
+  const comments = env.PLUGIN_COMMENTS || env.SNOW_COMMENTS || commentsFile;
+  const success = /^success$/i.test(env.PLUGIN_DEPLOYMENT_OUTCOME || env.SNOW_STATUS || env.DRONE_BUILD_STATUS);
   const newChange = newDeployment || !(statusUpdate || comments);
-  const failOnError = !/^false$/i.test(pe.PLUGIN_FAIL_ON_ERROR || pe.SNOW_FAIL_ON_ERROR);
-  const proxy = pe.PLUGIN_PROXY || pe.SNOW_PROXY;
+  const failOnError = !/^false$/i.test(env.PLUGIN_FAIL_ON_ERROR || env.SNOW_FAIL_ON_ERROR);
+  const proxy = env.PLUGIN_PROXY || env.SNOW_PROXY;
   const messageTemplates = {
     openChange: {
       messageid: 'HO_SIAM_IN_REST_CHG_POST_JSON',
       'external_identifier': externalID,
       payload: {
-        title: title,
-        startTime: startTime,
-        endTime: endTime,
+        title,
+        startTime,
+        endTime,
         description: stripControl(description),
         supplierRef: externalID,
       }
@@ -75,7 +81,7 @@ if (disabled) {
       messageid: 'HO_SIAM_IN_REST_CHG_UPDATE_JSON',
       'internal_identifier': internalID,
       payload: {
-        success: deploymentOutcome ? 'true' : 'false',
+        success: success ? 'true' : 'false',
         comments: stripControl(comments)
       }
     }
@@ -92,16 +98,19 @@ See PLUGIN_START_TIME, SNOW_START_TIME, PLUGIN_END_TIME, SNOW_END_TIME`);
   }
 
   const config = {
-    newChange: newChange,
+    newChange,
     endpoint: endpoint || `${protocol}://${sendToProd ? snowProdInstance : snowTestInstance}/${snowPath}`,
-    proxy: proxy,
-    username: username,
-    password: password,
+    proxy,
+    username,
+    password,
     message: newChange ? messageTemplates.openChange : messageTemplates.update,
-    intIDFile: intIDFile,
-    success: deploymentOutcome,
-    failOnError: failOnError
+    intIDFile,
+    success,
+    failOnError
   };
   logger.verbose('config parameters: ' + JSON.stringify(config));
-  module.exports = config;
-}
+
+  return config;
+};
+
+module.exports = { configure, loadFromFile, stripControl, DEFAULTS };
