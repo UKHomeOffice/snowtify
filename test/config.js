@@ -80,7 +80,7 @@ describe('Config module', () => {
         expect(this.stripControl(this.text))
           .be.a('string')
           .and.have.lengthOf.below(this.text.length)
-          .and.to.match(/^[^\0-\x08\x11-\x1f]+$/g)
+          .and.to.match(/^[^\0-\x08\x11-\x1f]+$/g) // eslint-disable-line no-control-regex
           .and.to.equal(this.clean));
     });
   });

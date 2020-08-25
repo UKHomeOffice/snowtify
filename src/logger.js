@@ -24,7 +24,7 @@ const logger = winston.createLogger({
   level:      options.logLevel,
   format:     combine(timestamp(), format),
   transports: [
-    new winston.transports.Console({ stderrLevels: [ 'error' ] })
+    new winston.transports.Console({ stderrLevels: ['error'] })
   ]
 });
 logger.verbose('Logging at level: ' + options.logLevel);
