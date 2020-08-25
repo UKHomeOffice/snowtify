@@ -69,7 +69,7 @@ if (config.disabled) {
       if (err.response) {
         logger.info(err.response.json || err.response.text);
       }
-      process.exit(config.failOnError ? err.status || 2 : 0); // eslint-disable-line no-process-exit
+      process.exit(config.failOnError === false ? 0 : (err.status || 2)); // eslint-disable-line no-process-exit
       throw err;
     });
 
