@@ -20,7 +20,7 @@ const ffs = files => {
 };
 
 describe('Config module', () => {
-  const { configure, loadFromFile, stripControl, DEFAULTS } = require('../src/config');
+  const { configure, loadFromFile, stripControl, DEFAULTS } = require('../../src/config');
 
   describe('helper function', () => {
 

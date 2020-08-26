@@ -1,6 +1,6 @@
 'use strict';
 
-const logs  = require('./logger-mock/logs.json');
+const logs  = require('../logger-mock/logs.json');
 const shell = require('shelljs');
 
 describe('Logger', function () {
