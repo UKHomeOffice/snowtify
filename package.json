@@ -8,7 +8,7 @@
     "start": "node .",
     "test": "npm-run-all -s lint cover check-coverage",
     "lint": "eslint .",
-    "cover": "nyc mocha ./test",
+    "cover": "nyc mocha ./test/unit",
     "check-coverage": "nyc check-coverage",
     "watch:unit": "nodemon -w src -w test -x 'npm test'",
     "start:mock-api": "dyson test/snow-api-mock",

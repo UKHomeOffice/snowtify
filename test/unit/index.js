@@ -2,11 +2,11 @@
 
 const fs       = require('fs');
 const http     = require('http');
-const snowPath = require('../src/config').DEFAULTS.SNOW_PATH;             // eslint-disable-line no-underscore-dangle
+const snowPath = require('../../src/config').DEFAULTS.SNOW_PATH;             // eslint-disable-line no-underscore-dangle
 const newID    = rewire('./snow-api-mock/rest-api').__get__('newID'); // eslint-disable-line no-underscore-dangle
 const mockPort = 3000;
 const mockProxyPort = 3001;
-const app      = require('../node_modules/express/lib/application');
+const app      = require('express/lib/application');
 let server;
 // welcome to hack city
 app.listen = function listen() {
