@@ -18,7 +18,7 @@ FROM base
 RUN apk upgrade --no-cache \
  && apk add git
 
-COPY .eslintignore .eslintrc.yaml /app/
+COPY .eslintignore .eslintrc.yaml .mocharc.js .nycrc.json /app/
 COPY test /app/test
 
 ENV NODE_ENV ci
