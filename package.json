@@ -1,6 +1,6 @@
 {
   "name": "snowtify",
-  "version": "0.3.1",
+  "version": "0.3.2-development",
   "description": "A `drone.io` plugin to connect the ServiceNow API to a CD pipeline.",
   "main": "src/index.js",
   "bin": "./snowtify.js",
@@ -13,11 +13,13 @@
     "watch:unit": "nodemon -w src -w test -x 'npm test'",
     "start:mock-api": "dyson test/snow-api-mock",
     "stop:mock-api": "killall ServiceNow-mock-api",
-    "version": "./.version.js && git add .drone.yml"
+    "version": "./.version.js && git add .drone.yml",
+    "postinstall": "git config core.hooksPath .githooks",
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/UKHomeOffice/snowtify.git"
+    "url": "https://github.com/UKHomeOffice/snowtify.git"
   },
   "keywords": [
     "drone",
@@ -35,6 +37,8 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chai-json": "github:RobinKnipe/chai-json",
+    "commitizen": "^4.1.2",
+    "cz-conventional-changelog": "^3.2.0",
     "dyson": "^3.0.3",
     "eslint": "^4.17.0",
     "eslint-plugin-filenames": "^1.2.0",
@@ -49,7 +53,8 @@
     "rewire": "^3.0.2",
     "shelljs": "^0.8.1",
     "sinon": "^4.3.0",
-    "sinon-chai": "^2.14.0"
+    "sinon-chai": "^2.14.0",
+    "semantic-release": "^17.1.1"
   },
   "dependencies": {
     "moment": "^2.20.1",

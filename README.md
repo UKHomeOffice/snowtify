@@ -1,6 +1,8 @@
 # snowtify
 A utility to connect a CD pipeline to the ServiceNow API (often referred to here as `snow` for short).
 
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+
 ## Usage
 The utility is configured via environment variables - see the `config.js` tests
 [here](https://github.com/UKHomeOffice/snowtify/blob/master/test/config.js), and the
