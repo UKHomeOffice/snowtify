@@ -47,7 +47,7 @@
     "nyc": "^15.1.0",
     "proxyquire": "^1.8.0",
     "rewire": "^3.0.2",
-    "shelljs": "^0.8.1",
+    "shelljs": "^0.8.5",
     "sinon": "^4.3.0",
     "sinon-chai": "^2.14.0"
   },
