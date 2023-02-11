@@ -42,7 +42,7 @@
     "eslint-plugin-one-variable-per-var": "0.0.3",
     "mocha": "^8.1.1",
     "mock-fs": "^4.4.2",
-    "nodemon": "^2.0.4",
+    "nodemon": "^2.0.20",
     "npm-run-all": "^4.1.2",
     "nyc": "^15.1.0",
     "proxyquire": "^1.8.0",
